@@ -7,6 +7,7 @@ class Todolist:
 		self.behavior = account.get('behavior')
 		self.todolist = account.get('todolist')
 		self.goals = account.get('goals')
+		self.tournaments = account.get('tournaments')
 		self.limit = account.get('limit')
 		self.api = api
 		self.fights = api.farmer['fights']
@@ -82,6 +83,12 @@ class Todolist:
 			yield g._FARMER_
 			nb -= 1 
 
+	def registerTournaments(self):
+		for leek in self.tournaments:
+			if leek == g._FARMER_:
+				self.api.register_tournament(leek)
+			else:
+				self.api.register_tournament(self.api.leeks_to_ID[leek])
 	
 	def trySpendCapital(self):
 		indexleek = 0

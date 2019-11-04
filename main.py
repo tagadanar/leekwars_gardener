@@ -28,8 +28,13 @@ for account in Accounts.list:
 	# welcome & get leeks to realID
 	leeks_to_ID = api.display_status()
 
+	# init todolist
 	todo = Todolist(account, api)
 	
+	# register tournaments if needed
+	if account.get('tournaments'):
+		todo.registerTournaments()
+
 	# try spending capital once
 	if account.get('goals'):
 		todo.trySpendCapital()

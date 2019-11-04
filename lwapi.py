@@ -92,11 +92,11 @@ class lwapi:
 		if isOutOfGarden:
 			print("%s/!\\%s farmer not in garden ! %s/!\\%s"%(bcolors.FAIL, bcolors.WARNING, bcolors.FAIL, bcolors.ENDC))
 			
-		leeksID = {}
+		leeks_to_ID = {}
 		index = g._LEEK_1_
 		for leekid, leekinfo in self.farmer['leeks'].items():
 			# saving leek realID
-			leeksID[index] = leekid
+			leeks_to_ID[index] = leekid
 			index += 1
 			
 			# display welcome info
@@ -108,7 +108,8 @@ class lwapi:
 			if lCapital > 0:
 				warn = "%s/!\\%s %s capital points unused %s/!\\%s"%(bcolors.FAIL, bcolors.WARNING, lCapital, bcolors.FAIL, bcolors.ENDC)
 			print("%s - lvl%s | talent: %s %s"%(lName, lLevel, lTalent, warn))
-		return leeksID
+		self.leeks_to_ID = leeks_to_ID
+		return leeks_to_ID
 
 	def refresh_account_state(self):
 		r = self.s.post("%s/farmer/login-token/"%self.rooturl, data={'login':self.login,'password':self.password})
@@ -124,4 +125,19 @@ class lwapi:
 	def get_leek(self, leek_id):
 		r = self.s.get("%s/leek/get/%s"%(self.rooturl,leek_id), data={'leek':leek_id})
 		return r.json()
+
+	def register_tournament(self, leek_id):
+		if leek_id == g._FARMER_:
+			r = self.s.post("%s/farmer/register-tournament"%self.rooturl)
+			if r:
+				print("%s%s%s registred to tournament"%(bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC))
+			else:
+				print("%s%s%s tournament registering: %s%s%s"%(bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC,bcolors.FAIL,r.json(),bcolors.ENDC))
+		else:
+			r = self.s.post("%s/leek/register-tournament"%self.rooturl, data={'leek_id':leek_id})
+			if r:
+				print("%s%s%s registred to tournament"%(bcolors.OKBLUE,self.farmer['leeks'][leek_id]["name"],bcolors.ENDC))
+			else:
+				print("%s%s%s tournament registering: %s%s%s"%(bcolors.OKBLUE,self.farmer['leeks'][leek_id]["name"],bcolors.ENDC,bcolors.FAIL,r.json(),bcolors.ENDC))
+			
 		
