@@ -34,7 +34,7 @@ _SOLO\_X_ : ne fait que des fights solo avec le leek *X* (X étant une valeur en
 
 
 **todolist** correspond à un dictionnaire {}, avec pour clé les constantes de la class g (cf. utils.py), où FARMER représente les combats d'éleveurs, et LEEK\_1/2/3/4 représentent les 4 leeks d'un compte, dans l'ordre de leur création (et donc dans leur ordre sur le site)  
-les valeurs sont le nombre de combat a réalisé avec chaque clé.
+les valeurs sont le nombre de combats à réaliser avec chaque clé.
 
 **tournaments** correspond à une liste [], avec pour valeur les constantes de la class g (cf. utils.py), où FARMER représente le compte et LEEK\_1/2/3/4 représentent les 4 leeks d'un compte, dans l'ordre de leur création (et donc dans leur ordre sur le site)  
 le script tentera d'inscrire aux tournois chaque valeur dans la liste.
