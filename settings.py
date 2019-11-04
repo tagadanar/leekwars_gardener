@@ -24,7 +24,7 @@ class Accounts:
 				g.LEEK_2,
 				g.LEEK_3,
 				g.LEEK_4,
-			]
+			],
 			'goals': {
 				g.LEEK_1: goal.NONE,
 				g.LEEK_2: goal.FOCUS_LIFE,
