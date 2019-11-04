@@ -23,11 +23,16 @@ class g:
 	}
 
 class behavior:
-	BALANCED = 'BALANCED' # split fights in 5 for each leeks + farmer
+	BALANCED = 'BALANCED' # split fights between each leeks + farmer
 	EQUALIZE = 'EQUALIZE' # regroup levels then focus on farmer
 	FARMING  = 'FARMING'  # focus on farmer
 	TODOLIST = 'TODOLIST' # do the todolist (ignore limit)
-	NONE = 'NONE'
+	SOLO_BALANCED = 'SOLO_BALANCED' # split fights between each leeks
+	SOLO_1 = 'SOLO_1' # only solo with first leek
+	SOLO_2 = 'SOLO_2' # only solo with second leek
+	SOLO_3 = 'SOLO_3' # only solo with third leek
+	SOLO_4 = 'SOLO_4' # only solo with fourth leek
+	NONE = 'NONE' # do nothing, only refresh connection and display account status
 
 class shutdown:
 	OFF= 0

@@ -26,6 +26,10 @@ class Todolist:
 			return self.equalizeGenerator()
 		elif self.behavior == behavior.FARMING:
 			return self.farmingGenerator()
+		elif self.behavior == behavior.SOLO_BALANCED:
+			return self.solobalancedGenerator()
+		elif self.behavior.startswith('SOLO_'):
+			return self.soloGenerator(int(self.behavior[5]))
 		else:
 			print("%s/!\\ UNKNOWN BEHAVIOR /!\\%s"%(bcolors.FAIL, bcolors.ENDC))
 			return []
@@ -47,6 +51,24 @@ class Todolist:
 				for x in range(self.size):
 					yield x
 					nb -= 1
+
+	def solobalancedGenerator(self):
+		nb = max(self.fights - self.limit, 0)
+		if self.size == 1:
+			while nb > 0:
+				yield g.LEEK_1
+				nb -= 1
+		else:
+			while nb > 0:
+				for x in range(1, self.size):
+					yield x
+					nb -= 1
+
+	def soloGenerator(self, leek):
+		nb = max(self.fights - self.limit, 0)
+		while nb > 0:
+			yield leek
+			nb -= 1
 
 	def equalizeGenerator(self):
 		nb = max(self.fights - self.limit, 0)
