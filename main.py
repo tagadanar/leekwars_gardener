@@ -41,7 +41,7 @@ for account in Accounts.list:
 
 	# do the fights
 	for leekid in todo.getGenerator():
-		is_farmer = leekid == g._FARMER_
+		is_farmer = leekid == g.FARMER
 		if is_farmer:
 			fight_id = api.farmer_fight()
 		else:

@@ -12,17 +12,24 @@ class Accounts:
 			'behavior': behavior.EQUALIZE,
 			'limit': 50, # if behavior != TODOLIST, how many fights we always keep in stock
 			'todolist': { # only needed if behavior = TODOLIST
-				g._FARMER_: 0,
-				g._LEEK_1_: 0,
-				g._LEEK_2_: 0,
-				g._LEEK_3_: 0,
-				g._LEEK_4_: 0,
+				g.FARMER: 0,
+				g.LEEK_1: 0,
+				g.LEEK_2: 0,
+				g.LEEK_3: 0,
+				g.LEEK_4: 0,
 			},
+			'tournaments': [
+				g.FARMER,
+				g.LEEK_1,
+				g.LEEK_2,
+				g.LEEK_3,
+				g.LEEK_4,
+			]
 			'goals': {
-				g._LEEK_1_: goal.NONE,
-				g._LEEK_2_: goal.FOCUS_LIFE,
-				g._LEEK_3_: goal.FOCUS_STRENGTH,
-				g._LEEK_4_: goal.FOCUS_WISDOM,
+				g.LEEK_1: goal.NONE,
+				g.LEEK_2: goal.FOCUS_LIFE,
+				g.LEEK_3: goal.FOCUS_STRENGTH,
+				g.LEEK_4: goal.FOCUS_WISDOM,
 			},
 		},
 		{

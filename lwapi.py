@@ -64,10 +64,10 @@ class lwapi:
 				else:
 					sys.stdout.write('.')
 				sys.stdout.flush()
-				time.sleep(g._DELAY_)
+				time.sleep(g.DELAY)
 				continue
 			elif winner>=0:
-				win = g._WINNERSWITCH_.get(winner, 'WTF?')
+				win = g.WINNERSWITCH.get(winner, 'WTF?')
 				if is_farmer:
 					myTalent = result['report']['farmer1']['talent'] + result['report']['farmer1']['talent_gain']
 					enTalent = result['report']['farmer2']['talent'] + result['report']['farmer2']['talent_gain']
@@ -93,7 +93,7 @@ class lwapi:
 			print("%s/!\\%s farmer not in garden ! %s/!\\%s"%(bcolors.FAIL, bcolors.WARNING, bcolors.FAIL, bcolors.ENDC))
 			
 		leeks_to_ID = {}
-		index = g._LEEK_1_
+		index = g.LEEK_1
 		for leekid, leekinfo in self.farmer['leeks'].items():
 			# saving leek realID
 			leeks_to_ID[index] = leekid
@@ -127,7 +127,7 @@ class lwapi:
 		return r.json()
 
 	def register_tournament(self, leek_id):
-		if leek_id == g._FARMER_:
+		if leek_id == g.FARMER:
 			r = self.s.post("%s/farmer/register-tournament"%self.rooturl)
 			if r:
 				print("%s%s%s registred to tournament"%(bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC))

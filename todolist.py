@@ -40,7 +40,7 @@ class Todolist:
 		nb = max(self.fights - self.limit, 0)
 		if self.size == 1:
 			while nb > 0:
-				yield g._LEEK_1_
+				yield g.LEEK_1
 				nb -= 1
 		else:
 			while nb > 0:
@@ -61,12 +61,12 @@ class Todolist:
 					is_same_level = False
 					break
 			if is_same_level:
-				yield g._FARMER_
+				yield g.FARMER
 				nb -= 1
 			else:
 				# not same lvl, focus on lower
-				index = g._LEEK_1_
-				lowestIndex = g._FARMER_
+				index = g.LEEK_1
+				lowestIndex = g.FARMER
 				lowestLevel = 302
 				for leekid, leekinfo in self.api.farmer['leeks'].items():
 					lLevel = leekinfo['level']
@@ -80,12 +80,12 @@ class Todolist:
 	def farmingGenerator(self):
 		nb = max(self.fights - self.limit, 0)
 		while nb > 0:
-			yield g._FARMER_
+			yield g.FARMER
 			nb -= 1 
 
 	def registerTournaments(self):
 		for leek in self.tournaments:
-			if leek == g._FARMER_:
+			if leek == g.FARMER:
 				self.api.register_tournament(leek)
 			else:
 				self.api.register_tournament(self.api.leeks_to_ID[leek])
