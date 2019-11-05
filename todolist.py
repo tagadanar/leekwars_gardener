@@ -130,20 +130,11 @@ class Todolist:
 						if added_life >= 2000:
 							final = lCapital*2
 						elif added_life >= 1000:
-							missing_life = 2002 - added_life
-							if missing_life < lCapital*3:
-								final = lCapital*3
-							else:
-								before_threshold_capital = missing_life/3
-								final = missing_life + (lCapital - before_threshold_capital)*2
+							# bugged if I overcap to 2k+ feeling lazy... TODO fixme
+							final = lCapital*3
 						elif added_life < 1000:
-							missing_life = 1000 - added_life
-							if missing_life < lCapital*4:
-								final = lCapital*4
-							else:
-								# note to self : if I'm in a case where I can add over 2k pv this will bug
-								before_threshold_capital = missing_life/4
-								final = missing_life + (lCapital - before_threshold_capital)*3
+							# bugged if I overcap to 1k+ feeling lazy... TODO fixme
+							final = lCapital*4
 						stats[lgoal] = final
 
 					elif lgoal == goal.FOCUS_STRENGTH or \

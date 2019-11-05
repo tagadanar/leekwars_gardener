@@ -120,7 +120,7 @@ class lwapi:
 		if r:
 			print("%s%s%s spent %s"%(bcolors.OKBLUE,self.farmer['leeks'][leek_id]['name'],bcolors.ENDC,stats))
 		else:
-			print("%s%s%s when trying to spend %s on %s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,stats,self.farmer['leeks'][leek_id]['name']))
+			print("%s%s%s when trying to spend %s on %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,stats,bcolors.OKBLUE,self.farmer['leeks'][leek_id]['name'],bcolors.ENDC))
 
 	def get_leek(self, leek_id):
 		r = self.s.get("%s/leek/get/%s"%(self.rooturl,leek_id), data={'leek':leek_id})
@@ -132,12 +132,12 @@ class lwapi:
 			if r:
 				print("%s%s%s registered to tournament"%(bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC))
 			else:
-				print("%s%s%s tournament registering: %s%s%s"%(bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC,bcolors.FAIL,r.json(),bcolors.ENDC))
+				print("%s%s%s when trying to register tournament on %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC))
 		else:
 			r = self.s.post("%s/leek/register-tournament"%self.rooturl, data={'leek_id':leek_id})
 			if r:
 				print("%s%s%s registered to tournament"%(bcolors.OKBLUE,self.farmer['leeks'][leek_id]["name"],bcolors.ENDC))
 			else:
-				print("%s%s%s tournament registering: %s%s%s"%(bcolors.OKBLUE,self.farmer['leeks'][leek_id]["name"],bcolors.ENDC,bcolors.FAIL,r.json(),bcolors.ENDC))
+				print("%s%s%s when trying to register tournament on %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.OKBLUE,self.farmer['leeks'][leek_id]["name"],bcolors.ENDC))
 			
 		
