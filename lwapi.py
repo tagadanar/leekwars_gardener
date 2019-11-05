@@ -130,13 +130,13 @@ class lwapi:
 		if leek_id == g.FARMER:
 			r = self.s.post("%s/farmer/register-tournament"%self.rooturl)
 			if r:
-				print("%s%s%s registred to tournament"%(bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC))
+				print("%s%s%s registered to tournament"%(bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC))
 			else:
 				print("%s%s%s tournament registering: %s%s%s"%(bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC,bcolors.FAIL,r.json(),bcolors.ENDC))
 		else:
 			r = self.s.post("%s/leek/register-tournament"%self.rooturl, data={'leek_id':leek_id})
 			if r:
-				print("%s%s%s registred to tournament"%(bcolors.OKBLUE,self.farmer['leeks'][leek_id]["name"],bcolors.ENDC))
+				print("%s%s%s registered to tournament"%(bcolors.OKBLUE,self.farmer['leeks'][leek_id]["name"],bcolors.ENDC))
 			else:
 				print("%s%s%s tournament registering: %s%s%s"%(bcolors.OKBLUE,self.farmer['leeks'][leek_id]["name"],bcolors.ENDC,bcolors.FAIL,r.json(),bcolors.ENDC))
 			
