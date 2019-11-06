@@ -2,6 +2,8 @@
 script en python3 qui permet de gérer ses comptes à travers l'api leekwars  
 le script attend le résultat de chaque fight pour lancer la suivante
 
+![gardener](https://i.imgur.com/L6sgsHJ.png)
+
 ## usage
 
 nécessite [python3](https://www.python.org/downloads/) et [pip](https://pypi.org/project/pip/)
