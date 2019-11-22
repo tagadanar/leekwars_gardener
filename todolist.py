@@ -72,32 +72,37 @@ class Todolist:
 
 	def equalizeGenerator(self):
 		nb = max(self.fights - self.limit, 0)
-		while nb > 0:
-			# check same level
-			is_same_level = True
-			baselvl = -1
-			for leekid, leekinfo in self.api.farmer['leeks'].items():
-				if baselvl == -1:
-					baselvl = leekinfo['level']
-				if baselvl != leekinfo['level']:
-					is_same_level = False
-					break
-			if is_same_level:
-				yield g.FARMER
+		if self.size == 1:
+			while nb > 0:
+				yield g.LEEK_1
 				nb -= 1
-			else:
-				# not same lvl, focus on lower
-				index = g.LEEK_1
-				lowestIndex = g.FARMER
-				lowestLevel = 302
+		else:
+			while nb > 0:
+				# check same level
+				is_same_level = True
+				baselvl = -1
 				for leekid, leekinfo in self.api.farmer['leeks'].items():
-					lLevel = leekinfo['level']
-					if lowestLevel > lLevel:
-						lowestIndex = index
-						lowestLevel = lLevel
-					index += 1
-				yield lowestIndex
-				nb -= 1
+					if baselvl == -1:
+						baselvl = leekinfo['level']
+					if baselvl != leekinfo['level']:
+						is_same_level = False
+						break
+				if is_same_level:
+					yield g.FARMER
+					nb -= 1
+				else:
+					# not same lvl, focus on lower
+					index = g.LEEK_1
+					lowestIndex = g.FARMER
+					lowestLevel = 302
+					for leekid, leekinfo in self.api.farmer['leeks'].items():
+						lLevel = leekinfo['level']
+						if lowestLevel > lLevel:
+							lowestIndex = index
+							lowestLevel = lLevel
+						index += 1
+					yield lowestIndex
+					nb -= 1
 
 	def farmingGenerator(self):
 		nb = max(self.fights - self.limit, 0)
