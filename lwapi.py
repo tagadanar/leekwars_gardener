@@ -64,10 +64,10 @@ class lwapi:
                                 else:
                                         sys.stdout.write('.')
                                 sys.stdout.flush()
-                                time.sleep(g._DELAY_)
+                                time.sleep(g.DELAY)
                                 continue
                         elif winner>=0:
-                                win = g._WINNERSWITCH_.get(winner, 'WTF?')
+                                win = g.WINNERSWITCH.get(winner, 'WTF?')
                                 if is_farmer:
                                         myTalent = result['report']['farmer1']['talent'] + result['report']['farmer1']['talent_gain']
                                         enTalent = result['report']['farmer2']['talent'] + result['report']['farmer2']['talent_gain']
@@ -92,11 +92,11 @@ class lwapi:
                 if isOutOfGarden:
                         print("%s/!\\%s farmer not in garden ! %s/!\\%s"%(bcolors.FAIL, bcolors.WARNING, bcolors.FAIL, bcolors.ENDC))
                         
-                leeksID = {}
-                index = g._LEEK_1_
+                leeks_to_ID = {}
+                index = g.LEEK_1
                 for leekid, leekinfo in self.farmer['leeks'].items():
                         # saving leek realID
-                        leeksID[index] = leekid
+                        leeks_to_ID[index] = leekid
                         index += 1
                         
                         # display welcome info
@@ -108,26 +108,69 @@ class lwapi:
                         if lCapital > 0:
                                 warn = "%s/!\\%s %s capital points unused %s/!\\%s"%(bcolors.FAIL, bcolors.WARNING, lCapital, bcolors.FAIL, bcolors.ENDC)
                         print("%s - lvl%s | talent: %s %s"%(lName, lLevel, lTalent, warn))
-                return leeksID
+                self.leeks_to_ID = leeks_to_ID
+                return leeks_to_ID
 
         def refresh_account_state(self):
                 r = self.s.post("%s/farmer/login-token/"%self.rooturl, data={'login':self.login,'password':self.password})
                 self.farmer = r.json()['farmer']
 
-        def register_tournaments(self):
-                r = self.s.post("%s/farmer/register-tournament"%self.rooturl)
-                for leekid, leekinfo in self.farmer['leeks'].items():
-                        r = self.s.post("%s/leek/register-tournament"%self.rooturl, data={'leek_id':leekid})
-                        if r:
-                                print(leekinfo["name"], "registred to tournament")
         def spend_capital(self, leek_id, stats):
                 r = self.s.post("%s/leek/spend-capital"%self.rooturl, data={'leek':leek_id,'characteristics':stats})
                 if r:
                         print("%s%s%s spent %s"%(bcolors.OKBLUE,self.farmer['leeks'][leek_id]['name'],bcolors.ENDC,stats))
                 else:
-                        print("%s%s%s when trying to spend %s on %s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,stats,self.farmer['leeks'][leek_id]['name']))
+                        print("%s%s%s when trying to spend %s on %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,stats,bcolors.OKBLUE,self.farmer['leeks'][leek_id]['name'],bcolors.ENDC))
 
         def get_leek(self, leek_id):
                 r = self.s.get("%s/leek/get/%s"%(self.rooturl,leek_id), data={'leek':leek_id})
                 return r.json()
-                
+
+        def register_tournament(self, leek_id):
+                if leek_id == g.FARMER:
+                        r = self.s.post("%s/farmer/register-tournament"%self.rooturl)
+                        if r:
+                                print("%s%s%s registered to tournament"%(bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC))
+                        else:
+                                print("%s%s%s when trying to register tournament on %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC))
+                else:
+                        r = self.s.post("%s/leek/register-tournament"%self.rooturl, data={'leek_id':leek_id})
+                        if r:
+                                print("%s%s%s registered to tournament"%(bcolors.OKBLUE,self.farmer['leeks'][leek_id]["name"],bcolors.ENDC))
+                        else:
+                                print("%s%s%s when trying to register tournament on %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.OKBLUE,self.farmer['leeks'][leek_id]["name"],bcolors.ENDC))
+                        
+        def makeRequest(self, url, args):
+                r = self.s.post("%s/%s"%(self.rooturl,url), data=args)
+                return r
+        def create_folder(self,folderName):
+                r = self.makeRequest('ai/get-farmer-ais', {})
+                for folder in r.json()['folders']:
+                        if folder['name']==folderName:
+                                return folder['id']
+                r = self.s.post("%s/ai-folder/new"%self.rooturl, data={'folder_id':0})
+                fid = r.json()['id'];
+                r = self.s.post("%s/ai-folder/rename"%self.rooturl, data={'folder_id':fid, 'new_name':folderName})
+                return fid
+        def create_ai(self, folderid, name):
+                r = self.makeRequest('ai/get-farmer-ais', {})
+                for ai in r.json()['ais']:
+                        if ai['name']==name:
+                                return ai['id']
+                r = self.s.post("%s/ai/new"%self.rooturl, data={'folder_id':folderid, 'v2':0})
+                fid = r.json()['id'];
+                r = self.s.post("%s/ai/rename"%self.rooturl, data={'ai_id':fid, 'new_name':name})
+                return r
+        def saveai(self, ai, code):
+                r = self.makeRequest('ai/save', {'ai_id':ai,'code':code})
+                return r
+        def getai(self, ai):
+                r = self.makeRequest('ai/get', {'ai_id':ai})
+                return r
+        def listais(self, folderid):
+                r = self.makeRequest('ai/get-farmer-ais', {})
+                ailist = []
+                for ai in r.json()['ais']:
+                        if ai['folder']==folderid:
+                                ailist.append(ai)
+                return ailist
