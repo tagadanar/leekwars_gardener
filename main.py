@@ -51,6 +51,10 @@ for account in Accounts.list:
         if account.get('goals'):
                 todo.trySpendCapital()
 
+    for compoid in todo.getTeamFightsGenerator():
+        fight_id = api.compo_fight(compoid)
+        api.wait_fight_result(fight_id, 2)
+
     # display status when fights are done
     if account.get('behavior') != behavior.NONE:
         api.display_status()

@@ -32,12 +32,10 @@ class lwapi:
                 r = self.s.get("%s/garden/get-leek-opponents/%s"%(self.rooturl,leekid), headers=self.headers, data={'leek_id':leekid})
                 garden = r.json()['opponents']
                 e = random.choice(garden)
-                eid = e['id']
-                # launch the fight
-                r = self.s.post("%s/garden/start-solo-fight/%s/%s"%(self.rooturl,leekid,eid), headers=self.headers, data={'leek_id':leekid, 'target_id':eid})
+                eid = e['id'] # launch the fight r = self.s.post("%s/garden/start-solo-fight/%s/%s"%(self.rooturl,leekid,eid), headers=self.headers, data={'leek_id':leekid, 'target_id':eid})
                 fight_id = r.json()['fight']
                 return fight_id
-                
+
         # launch a farmer fight against random adv, return fight_id
         def farmer_fight(self):
                 # pick a rand adv from farmergarden
@@ -50,8 +48,21 @@ class lwapi:
                 fight_id = r.json()['fight']
                 return fight_id
 
+        def compo_fight(self, compo_id):
+                # pick a rand adv from farmergarden
+                r = self.s.get("%s/garden/get-composition-opponents/%s"%(self.rooturl,compo_id),data={'composition':compo_id}, headers=self.headers)
+                garden = r.json()['opponents']
+                e = random.choice(garden)
+                eid = e['id']
+                # launch the fight
+                r = self.s.post("%s/garden/start-team-fight/%s"%(self.rooturl,eid), headers=self.headers, data={'composition_id':compo_id,'target_id':eid})
+                breakpoint()
+                fight_id = r.json()['fight']
+                return fight_id
+
+
         # wait for fight result then print it
-        def wait_fight_result(self, fight_id, is_farmer):
+        def wait_fight_result(self, fight_id, kind):
                 firstwait = True
                 while True:
                         r = self.s.get("%s/fight/get/%s"%(self.rooturl,fight_id), headers=self.headers, data={'fight_id':fight_id})
@@ -68,12 +79,15 @@ class lwapi:
                                 continue
                         elif winner>=0:
                                 win = g.WINNERSWITCH.get(winner, 'WTF?')
-                                if is_farmer:
+                                if kind == 1:
                                         myTalent = result['report']['farmer1']['talent'] + result['report']['farmer1']['talent_gain']
                                         enTalent = result['report']['farmer2']['talent'] + result['report']['farmer2']['talent_gain']
                                         print("\r%s %s (%s) vs %s (%s)"%(win, result['report']['farmer1']['name'], myTalent, result['report']['farmer2']['name'], enTalent))
-                                else:
+                                elif kind == 0:
                                         print("\r%s %s -lvl%s (%s) vs %s (%s)"%(win, result['leeks1'][0]['name'], result['leeks1'][0]['level'], result['leeks1'][0]['talent'], result['leeks2'][0]['name'], result['leeks2'][0]['talent']))
+                                elif kind == 2:#compo fights
+                                         print("\r%s %s -lvl%s (%s) vs %s (%s)"%(win, result['team1'][0]['name'], result['team1'][0]['level'], result['team1'][0]['talent'], result['team2'][0]['name'], result['team2'][0]['talent']))
+                                        
                                 sys.stdout.flush()
                                 self.refresh_account_state()
                                 return
@@ -109,7 +123,15 @@ class lwapi:
                                 warn = "%s/!\\%s %s capital points unused %s/!\\%s"%(bcolors.FAIL, bcolors.WARNING, lCapital, bcolors.FAIL, bcolors.ENDC)
                         print("%s - lvl%s | talent: %s %s"%(lName, lLevel, lTalent, warn))
                 self.leeks_to_ID = leeks_to_ID
+                   
                 return leeks_to_ID
+
+        def get_compos_fights(self):
+                garden = self.get_garden();
+                compositions = garden['garden']['my_compositions']
+                for compo in compositions:
+                        for fight in range(0,compo['fights']):     
+                                yield compo['id'] 
 
         def refresh_account_state(self):
                 r = self.s.post("%s/farmer/login-token/"%self.rooturl, data={'login':self.login,'password':self.password})
@@ -143,6 +165,9 @@ class lwapi:
         def makeRequest(self, url, args):
                 r = self.s.post("%s/%s"%(self.rooturl,url), data=args)
                 return r
+        def get_garden(self):
+                r = self.makeRequest('garden/get', {});
+                return r.json()
         def create_folder(self,folderName):
                 r = self.makeRequest('ai/get-farmer-ais', {})
                 for folder in r.json()['folders']:
