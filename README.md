@@ -64,7 +64,7 @@ state.ASK : demande au lancement si le script doit synchroniser les ias
 state.ON : synchronisera systématiquement les ias
 
 ```
-**/!\\** attention, une mauvaise configuration de cette option vous expose à la perte potentiel de votre code **/!\\**  
+/!\ attention, une mauvaise configuration vous expose à la perte de votre code /!\  
 ```
 
 par précaution gardez toujours une copie de votre code de côté avant de jouer avec cette option !  
