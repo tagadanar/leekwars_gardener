@@ -47,7 +47,7 @@ le script tentera d'inscrire aux tournois chaque valeur dans la liste.
 - **directory** qui indique le path (relatif à l'emplacement du main.py ou absolu) du dossier contenant l'ia
 - **transfer** qui indique le sens de la synchronisation, montante (g.DOWNLOAD) ou descendante (g.UPLOAD)
 
-#### configurations générales
+### configurations générales
 
 **shutdown** (required)
 
@@ -63,19 +63,25 @@ state.OFF : ne synchronisera pas vos ias
 state.ASK : demande au lancement si le script doit synchroniser les ias  
 state.ON : synchronisera systématiquement les ias
 
+```
 **/!\\** attention, une mauvaise configuration de cette option vous expose à la perte potentiel de votre code **/!\\**  
+```
+
 par précaution gardez toujours une copie de votre code de côté avant de jouer avec cette option !  
-dans le doute, laissez l'option sur OFF.
+dans le doute, laissez l'option sur **OFF**.
 
 la synchronisation des ias se fera dans l'ordre de déclaration des comptes, une configuration enviable est donc d'avoir en premier compte votre compte actif où vous codez régulièrement sur le site, avec une config :
-```json
+
+```js
 'synchronize': {
     'directory': './path_to_ia_dir',
     'transfer': g.DOWNLOAD,
 }
 ```
-qui permettra de ramener en local les changements que vous avez fait sur le site, puis sur tous vos comptes suivant une config:
-```json
+qui permettra de ramener en local les changements que vous avez fait sur le site.  
+puis sur tous vos comptes suivant une config :
+
+```js
 'synchronize': {
     'directory': './path_to_ia_dir',
     'transfer': g.UPLOAD,
