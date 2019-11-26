@@ -45,7 +45,7 @@ le script tentera d'inscrire aux tournois chaque valeur dans la liste.
 
 **synchronize** correspond à un dictionnaire {} avec deux sous params:  
 - **directory** qui indique le path (relatif à l'emplacement du main.py ou absolu) du dossier contenant l'ia
-- **transfer** qui indique le sens de la synchronisation, montante (g.DOWNLOAD) ou descendante (g.UPLOAD)
+- **transfer** qui indique le sens de la synchronisation, montante (g.UPLOAD) ou descendante (g.DOWNLOAD)
 
 ### configurations générales
 
