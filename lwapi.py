@@ -109,6 +109,7 @@ class lwapi:
 				warn = "%s/!\\%s %s capital points unused %s/!\\%s"%(bcolors.FAIL, bcolors.WARNING, lCapital, bcolors.FAIL, bcolors.ENDC)
 			print("%s - lvl%s | talent: %s %s"%(lName, lLevel, lTalent, warn))
 		self.leeks_to_ID = leeks_to_ID
+		sys.stdout.flush()
 		return leeks_to_ID
 
 	def refresh_account_state(self):
@@ -139,5 +140,49 @@ class lwapi:
 				print("%s%s%s registered to tournament"%(bcolors.OKBLUE,self.farmer['leeks'][leek_id]["name"],bcolors.ENDC))
 			else:
 				print("%s%s%s when trying to register tournament on %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.OKBLUE,self.farmer['leeks'][leek_id]["name"],bcolors.ENDC))
-			
-		
+
+	def get_ais(self):
+		r = self.s.get("%s/ai/get-farmer-ais"%self.rooturl)
+		print(r.json()['folders'])
+		return r.json()
+
+	def get_ai(self, ai_id):
+		r = self.s.get("%s/ai/get/%s"%(self.rooturl,ai_id), data={'ai_id':ai_id})
+		return r.json()['ai']['code']
+
+	def create_ai(self, file_path, file_name, dir_id,  lw_item):
+		if lw_item == None:
+			#reminder false is for v1, should be a param of every account when v2 is out !
+			r = self.s.post("%s/ai/new/%s/%s"%(self.rooturl,dir_id,'false'), data={'folder_id':dir_id, 'v2':'false'})
+			if r:
+				lw_id = r.json()['ai']['id']
+				r = self.s.post("%s/ai/rename/%s/%s"%(self.rooturl,lw_id,file_name), data={'ai_id':lw_id, 'new_name':file_name})
+			if r:
+				print("%screated%s file %s%s%s"%(bcolors.OKBLUE,bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
+			else:
+				print("%s%s%s when trying to create file %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
+		else:
+			lw_id = lw_item['id']
+		with open(file_path, 'r') as reader:
+			code = reader.read()
+			r = self.s.post("%s/ai/save"%self.rooturl, data={'ai_id':lw_id,'code':code})
+			if r:
+				print("%supdated%s file %s%s%s"%(bcolors.OKBLUE,bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
+			else:
+				print("%s%s%s when trying to update file %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
+			sys.stdout.flush()
+
+	def create_dir(self, dir_path, dir_name, dir_id,  lw_item):
+		if lw_item == None:
+			r = self.s.post("%s/ai-folder/new/%s"%(self.rooturl,dir_id), data={'folder_id':dir_id})
+			if r:
+				lw_id = r.json()['id']
+				r = self.s.post("%s/ai-folder/rename/%s/%s"%(self.rooturl,lw_id,dir_name), data={'folder_id':lw_id, 'new_name':dir_name})
+			if r:
+				print("%screated%s directory %s%s%s"%(bcolors.OKBLUE,bcolors.ENDC,bcolors.HEADER,dir_name,bcolors.ENDC))
+			else:
+				print("%s%s%s when trying to create directory %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.HEADER,dir_name,bcolors.ENDC))
+			sys.stdout.flush()
+		else:
+			lw_id = lw_item['id']
+		return lw_id

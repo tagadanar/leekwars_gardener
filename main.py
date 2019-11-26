@@ -1,20 +1,29 @@
 #!/usr/bin/env python3
 from settings import Accounts
 from todolist import Todolist
-from utils import bcolors, g, behavior, shutdown
+from utils import bcolors, g, behavior, state
 from lwapi import lwapi
 import os
 
 #################################################################
 # Main program
 #################################################################
+should_synchronize = False
+if Accounts.synchronize == state.ON:
+	should_synchronize = True
+elif Accounts.synchronize == state.ASK:
+	answer = input('Should synchronize ia before running todolist ? y/N')
+	if answer == "y":
+		should_synchronize = True
+
 should_shutdown = False
-if Accounts.shutdown == shutdown.ON:
+if Accounts.shutdown == state.ON:
 	should_shutdown = True
-elif Accounts.shutdown == shutdown.ASK:
+elif Accounts.shutdown == state.ASK:
 	answer = input('Should shutdown computer at the end ? y/N')
 	if answer == "y":
 		should_shutdown = True
+
 
 # main loop
 for account in Accounts.list:
@@ -31,6 +40,10 @@ for account in Accounts.list:
 	# init todolist
 	todo = Todolist(account, api)
 	
+	# syncronize ia
+	if should_synchronize:
+		todo.trySynchronize()
+
 	# register tournaments if needed
 	if account.get('tournaments'):
 		todo.registerTournaments()

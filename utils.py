@@ -21,6 +21,9 @@ class g:
 		1: bcolors.OKGREEN+"WIN "+bcolors.ENDC,
 		2: bcolors.FAIL+"LOSE"+bcolors.ENDC,
 	}
+	LW_ROOT_DIR= 0 # reminder: id 0 is the root dir for leekwars
+	DOWNLOAD= "download"
+	UPLOAD  = "upload"
 
 class behavior:
 	BALANCED = 'BALANCED' # split fights between each leeks + farmer
@@ -34,7 +37,7 @@ class behavior:
 	SOLO_4 = 'SOLO_4' # only solo with fourth leek
 	NONE = 'NONE' # do nothing, only refresh connection and display account status
 
-class shutdown:
+class state:
 	OFF= 0
 	ASK= 1
 	ON = 2

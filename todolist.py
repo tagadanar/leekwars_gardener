@@ -1,6 +1,7 @@
 import math
 import json
-from utils import g, behavior, goal
+import os
+from utils import g, bcolors, behavior, goal
 
 class Todolist:
 	def __init__(self, account, api):
@@ -9,6 +10,7 @@ class Todolist:
 		self.goals = account.get('goals')
 		self.tournaments = account.get('tournaments')
 		self.limit = account.get('limit')
+		self.synchronize = account.get('synchronize')
 		self.api = api
 		self.fights = api.farmer['fights']
 		self.size = len(api.farmer['leeks'])
@@ -168,3 +170,49 @@ class Todolist:
 					if final > 0:
 						stats = json.dumps(stats)
 						self.api.spend_capital(leekid, stats)
+
+	def trySynchronize(self):
+		transfer = self.synchronize['transfer']
+		directory = self.synchronize['directory']
+		if transfer == g.DOWNLOAD:
+			if not os.path.isdir(directory):
+				os.mkdir(directory)
+				print("%smkdir%s %s"%(bcolors.OKBLUE, bcolors.ENDC, directory))
+			ais = self.api.get_ais()
+			self.recursiv_create(ais['ais'], ais['folders'], g.LW_ROOT_DIR, directory)
+		elif transfer == g.UPLOAD:
+			ais = self.api.get_ais()
+			self.recursiv_read(ais, g.LW_ROOT_DIR, directory)
+		else:
+			print("%sunknown transfer direction:%s %s"%(bcolors.FAIL, bcolors.ENDC, transfer))
+
+	def recursiv_read(self, ais, dir_id, directory):
+		ldir = os.listdir(directory)
+		for name in ldir:
+			file_path = os.path.join(directory,name)
+			if os.path.isfile(file_path):
+				lw_item = next((ai for ai in ais['ais'] if ai['name'] == name), None)
+				self.api.create_ai(file_path, name, dir_id, lw_item)
+		for name in ldir:
+			dir_path = os.path.join(directory,name)
+			if os.path.isdir(dir_path):
+				lw_item = next((fd for fd in ais['folders'] if fd['name'] == name), None)
+				folder_id = self.api.create_dir(dir_path, name, dir_id, lw_item)
+				self.recursiv_read(ais, folder_id, dir_path)
+
+	def recursiv_create(self, ais, folders, parent_id, root_id):
+		for ai in ais:
+			if ai['folder'] == parent_id:
+				code = self.api.get_ai(ai['id'])
+				file_path = os.path.join(root_id,ai['name'])
+				with open(file_path, 'w') as writer: 
+					writer.write(code)
+					print("%swriting%s %s"%(bcolors.OKBLUE, bcolors.ENDC, file_path))
+		for d in folders:
+			if d['folder'] == parent_id:
+				dir_name = os.path.join(root_id,d['name'])
+				if not os.path.isdir(dir_name):
+					os.mkdir(dir_name)
+					print("%smkdir%s %s"%(bcolors.OKBLUE, bcolors.ENDC, dir_name))
+				self.recursiv_create(ais, folders, d['id'], dir_name)
+
