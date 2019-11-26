@@ -56,9 +56,9 @@ state.OFF : n'éteindra pas le pc
 state.ASK : demande au lancement si le script doit éteindre le pc  
 state.ON : éteindra le pc à la fin du script
 
-**syncronize** (required)
+**synchronize** (required)
 
-paramètre permettant la syncronisation des ias, peut prendre 3 valeurs :  
+paramètre permettant la synchronisation des ias, peut prendre 3 valeurs :  
 state.OFF : ne synchronisera pas vos ias  
 state.ASK : demande au lancement si le script doit synchroniser les ias  
 state.ON : synchronisera systématiquement les ias
