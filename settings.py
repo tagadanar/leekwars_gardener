@@ -1,10 +1,11 @@
-from utils import g, behavior, shutdown, goal
+from utils import g, behavior, state, goal
 
 #################################################################
 # Declaring accounts
 #################################################################
 class Accounts:
-	shutdown = shutdown.OFF
+	shutdown = state.OFF
+	synchronize = state.OFF
 	list= [
 		{
 			'login': 'myAccount',
@@ -30,6 +31,10 @@ class Accounts:
 				g.LEEK_2: goal.FOCUS_LIFE,
 				g.LEEK_3: goal.FOCUS_STRENGTH,
 				g.LEEK_4: goal.FOCUS_WISDOM,
+			},
+			'synchronize': {
+				'directory': './path_to_ia_dir',
+				'transfer': g.DOWNLOAD,
 			},
 		},
 		{
