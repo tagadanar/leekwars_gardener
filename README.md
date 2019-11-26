@@ -1,5 +1,5 @@
 # gardener
-script en python3 qui permet de gérer ses comptes à travers l'api leekwars :
+script en python3 qui permet de gérer ses comptes à travers l'api [leekwars](https://leekwars.com) :
 - lancement des fights automatisés selon un *behavior*
 - attend le résultat de chaque fight pour lancer la suivante
 - dépense le capital dans une stat spécifique
