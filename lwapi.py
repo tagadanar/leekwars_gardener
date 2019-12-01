@@ -26,6 +26,16 @@ class lwapi:
                 self.s.get("%s/garden/get-farmer-opponents"%self.rooturl, headers=self.headers)
                 return self.farmer
 
+        def getLeastTalented(self, garden):
+                worse = None
+                for e in garden:
+                        if worse == None or e['talent']<worse['talent']:
+                                worse = e
+
+                return worse
+
+
+
         # launch a solo fight against random adv, return fight_id
         def solo_fight(self, leekid):
                 # pick a rand adv from sologarden
@@ -41,7 +51,7 @@ class lwapi:
                 # pick a rand adv from farmergarden
                 r = self.s.get("%s/garden/get-farmer-opponents"%self.rooturl, headers=self.headers)
                 garden = r.json()['opponents']
-                e = random.choice(garden)
+                e = self.getLeastTalented(garden)
                 eid = e['id']
                 # launch the fight
                 r = self.s.post("%s/garden/start-farmer-fight/%s"%(self.rooturl,eid), headers=self.headers, data={'target_id':eid})
@@ -56,7 +66,6 @@ class lwapi:
                 eid = e['id']
                 # launch the fight
                 r = self.s.post("%s/garden/start-team-fight/%s"%(self.rooturl,eid), headers=self.headers, data={'composition_id':compo_id,'target_id':eid})
-                breakpoint()
                 fight_id = r.json()['fight']
                 return fight_id
 
@@ -86,7 +95,7 @@ class lwapi:
                                 elif kind == 0:
                                         print("\r%s %s -lvl%s (%s) vs %s (%s)"%(win, result['leeks1'][0]['name'], result['leeks1'][0]['level'], result['leeks1'][0]['talent'], result['leeks2'][0]['name'], result['leeks2'][0]['talent']))
                                 elif kind == 2:#compo fights
-                                         print("\r%s %s -lvl%s (%s) vs %s (%s)"%(win, result['team1'][0]['name'], result['team1'][0]['level'], result['team1'][0]['talent'], result['team2'][0]['name'], result['team2'][0]['talent']))
+                                         print("\r%s %s vs %s "%(win, result['team1_name'], result['team2_name']))
                                         
                                 sys.stdout.flush()
                                 self.refresh_account_state()
