@@ -9,6 +9,7 @@ class Todolist:
                 self.goals = account.get('goals')
                 self.tournaments = account.get('tournaments')
                 self.teamfights = account.get('teamfights')
+                self.buy_fights= account.get('buy_fights')
                 self.limit = account.get('limit')
                 self.api = api
                 self.fights = api.farmer['fights']

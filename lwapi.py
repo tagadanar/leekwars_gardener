@@ -16,6 +16,7 @@ class lwapi:
                 self.s = requests.session()
                 self.rooturl = "https://leekwars.com/api"
 
+
         # connecting to leekwars
         def connect(self):
                 r = self.s.post("%s/farmer/login-token/"%self.rooturl, data={'login':self.login,'password':self.password})
@@ -33,8 +34,6 @@ class lwapi:
                                 worse = e
 
                 return worse
-
-
 
         # launch a solo fight against random adv, return fight_id
         def solo_fight(self, leekid):
@@ -174,6 +173,11 @@ class lwapi:
         def makeRequest(self, url, args):
                 r = self.s.post("%s/%s"%(self.rooturl,url), data=args)
                 return r
+
+        def buy(self, item_id):
+                return self.makeRequest('market/buy-habs/',{'item_id':item_id})                
+
+
         def get_garden(self):
                 r = self.makeRequest('garden/get', {});
                 return r.json()

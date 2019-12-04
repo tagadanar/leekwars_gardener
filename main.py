@@ -29,6 +29,9 @@ for account in Accounts.list:
 
     # init todolist
     todo = Todolist(account, api)
+
+    if account.get('buy_fights'):
+            print(api.buy('100-fights').text);
     
     # register tournaments if needed
     if account.get('tournaments'):
