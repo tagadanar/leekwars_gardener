@@ -59,6 +59,8 @@ for account in Accounts.list:
 			fight_id = api.farmer_fight()
 		else:
 			fight_id = api.solo_fight(leeks_to_ID[leekid])
+		if fight_id is None:
+			continue
 		# waiting for result
 		api.wait_fight_result(fight_id, is_farmer)
 		# try spending capital after each fight

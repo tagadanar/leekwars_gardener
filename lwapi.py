@@ -31,6 +31,10 @@ class lwapi:
 		# pick a rand adv from sologarden
 		r = self.s.get("%s/garden/get-leek-opponents/%s"%(self.rooturl,leekid), headers=self.headers, data={'leek_id':leekid})
 		garden = r.json()['opponents']
+		if len(garden) < 1:
+			print("%sNo one in the garden%s when trying to do a solo fight with %s%s%s"%(bcolors.FAIL,bcolors.ENDC,bcolors.OKBLUE,self.farmer['leeks'][leek_id]['name'],bcolors.ENDC))
+			sys.stdout.flush()
+			return None
 		e = random.choice(garden)
 		eid = e['id']
 		# launch the fight
@@ -43,6 +47,10 @@ class lwapi:
 		# pick a rand adv from farmergarden
 		r = self.s.get("%s/garden/get-farmer-opponents"%self.rooturl, headers=self.headers)
 		garden = r.json()['opponents']
+		if len(garden) < 1:
+			print("%sNo one in the garden%s when trying to do a farmer fight with %s%s%s"%(bcolors.FAIL,bcolors.ENDC,bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC))
+			sys.stdout.flush()
+			return None
 		e = random.choice(garden)
 		eid = e['id']
 		# launch the fight
