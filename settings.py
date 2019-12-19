@@ -4,6 +4,7 @@ from utils import g, behavior, state, goal
 # Declaring accounts
 #################################################################
 class Accounts:
+	fight = state.ON
 	shutdown = state.OFF
 	synchronize = state.OFF
 	list= [

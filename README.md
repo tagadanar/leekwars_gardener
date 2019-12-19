@@ -18,6 +18,7 @@ nécessite [python3](https://www.python.org/downloads/) et [pip](https://pypi.or
 - python main.py
 
 ### settings.py
+
 chaque compte utilisateur est représenté par un dictionnaire {} python possédant les attributs suivants :
 
 - login (required)
@@ -52,6 +53,13 @@ le script tentera d'inscrire aux tournois chaque valeur dans la liste.
 - **transfer** qui indique le sens de la synchronisation, montante (g.UPLOAD) ou descendante (g.DOWNLOAD)
 
 ### configurations générales
+
+**fight** (required)
+
+paramètre permettant d'utiliser les combats dans le potager, peut prendre 3 valeurs :  
+state.OFF : n'ira pas se battre dans le potager  
+state.ASK : demande au lancement si le script doit combattre dans le potager  
+state.ON : se battera dans le potager selon le **behavior** du compte
 
 **shutdown** (required)
 
@@ -97,3 +105,12 @@ Une autre configuration pourrait être d'avoir tous vos comptes en UPLOAD, pour 
 
 NB. la synchronisation ne fait pas de purge, elle se contente d'écraser les fichiers déjà existant avec le nouveau contenu, et créer les fichiers/dossiers inexistant.  
 NB² pour le moment toutes les ias sont upload en lsv1, quand le lsv2 arrivera je mettrais ce script à jour, et un nouveau param sera disponible pour préciser la version du langage.
+
+### command line option
+
+certaines commandes peuvent être ajouté à l'appel pour ignorer la valeur d'un param dans setting.py:
+
+**-f --fight** fait les combats même si **fight** est config sur OFF  
+**-nf --no-fight** ne fait pas les combats même si **fight** est config sur ON  
+**-s --sync** fait la synchronisation de l'ia même si **synchronize** est sur OFF
+**-ns --no-sync** ne fait pas la synchronisation de l'ia même si **synchronize** est sur ON
