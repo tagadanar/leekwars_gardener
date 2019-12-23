@@ -10,28 +10,40 @@ def main():
 	# handling command line arguments
 	#################################################################
 	should_fight = False
-	if Accounts.fight == state.ON:
-		should_fight = True
-	elif Accounts.fight == state.ASK:
-		answer = input('Should fight in the garden ? y/N')
-		if answer == "y":
+	if hasattr(Accounts, 'fight'):
+		if Accounts.fight == state.ON:
 			should_fight = True
+		elif Accounts.fight == state.ASK:
+			answer = input('Should fight in the garden ? y/N')
+			if answer == "y":
+				should_fight = True
+
+	should_speedrun = False
+	if hasattr(Accounts, 'speedrun'):
+		if Accounts.speedrun == state.ON:
+			should_speedrun = True
+		elif Accounts.speedrun == state.ASK:
+			answer = input('Should speedrun and skip waiting between fights (don\'t abuse this, thx) ? y/N')
+			if answer == "y":
+				should_speedrun = True
 
 	should_synchronize = False
-	if Accounts.synchronize == state.ON:
-		should_synchronize = True
-	elif Accounts.synchronize == state.ASK:
-		answer = input('Should synchronize ia before running todolist ? y/N')
-		if answer == "y":
+	if hasattr(Accounts, 'synchronize'):
+		if Accounts.synchronize == state.ON:
 			should_synchronize = True
+		elif Accounts.synchronize == state.ASK:
+			answer = input('Should synchronize ia before running todolist ? y/N')
+			if answer == "y":
+				should_synchronize = True
 
 	should_shutdown = False
-	if Accounts.shutdown == state.ON:
-		should_shutdown = True
-	elif Accounts.shutdown == state.ASK:
-		answer = input('Should shutdown computer at the end ? y/N')
-		if answer == "y":
+	if hasattr(Accounts, 'shutdown'):
+		if Accounts.shutdown == state.ON:
 			should_shutdown = True
+		elif Accounts.shutdown == state.ASK:
+			answer = input('Should shutdown computer at the end ? y/N')
+			if answer == "y":
+				should_shutdown = True
 
 	# overriding config with arguments from command line
 	opts = sys.argv[1:]
@@ -83,8 +95,9 @@ def main():
 					fight_id = api.farmer_fight()
 				else:
 					fight_id = api.solo_fight(leeks_to_ID[leekid])
-				if fight_id is None:
+				if fight_id is None or should_speedrun:
 					continue
+				
 				# waiting for result
 				api.wait_fight_result(fight_id, is_farmer)
 				# try spending capital after each fight
@@ -92,7 +105,7 @@ def main():
 					todo.trySpendCapital()
 
 		# display status when fights are done
-		if should_fight and account.get('behavior') != behavior.NONE:
+		if should_fight and not should_speedrun and account.get('behavior') != behavior.NONE:
 			api.display_status()
 
 	if should_shutdown:

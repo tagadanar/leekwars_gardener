@@ -1,7 +1,7 @@
 # gardener
 script en python3 qui permet de gérer ses comptes à travers l'api [leekwars](https://leekwars.com) :
 - lancement des fights automatisés selon un *behavior*
-- attend le résultat de chaque fight pour lancer la suivante
+- attend le résultat de chaque fight pour lancer la suivante (ou pas..)
 - dépense le capital dans une stat spécifique
 - s'incrit aux tournois
 - permet la synchronisation des ias entre les comptes et avec du code local
@@ -61,24 +61,35 @@ le script tentera d'inscrire aux tournois chaque valeur dans la liste.
 
 ### configurations générales
 
-**fight** (required)
+**fight** (facultative)
 
 paramètre permettant d'utiliser les combats dans le potager, peut prendre 3 valeurs :  
-state.OFF : n'ira pas se battre dans le potager  
+state.OFF **(valeur par défaut)** : n'ira pas se battre dans le potager  
 state.ASK : demande au lancement si le script doit combattre dans le potager  
 state.ON : se battera dans le potager selon le **behavior** du compte
 
-**shutdown** (required)
+**speedrun** (facultative)
+
+paramètre permettant d'ignorer l'attente entre les fights (à utiliser avec parcimonie), peut prendre 3 valeurs :  
+state.OFF **(valeur par défaut)** : attendra entre chaque fight, comportement normal  
+state.ASK : demande au lancement si le script doit faire un speedrun  
+state.ON : n'attendra pas le résultat de la fight pour lancer la suivante
+
+```
+/!\ attention lors d'un speedrun l'attribution du capital ne peut plus fonctionner. /!\
+```
+
+**shutdown** (facultative)
 
 paramètre permettant d'éteindre le pc à la fin du script, peut prendre 3 valeurs :  
-state.OFF : n'éteindra pas le pc  
+state.OFF **(valeur par défaut)** : n'éteindra pas le pc  
 state.ASK : demande au lancement si le script doit éteindre le pc  
 state.ON : éteindra le pc à la fin du script
 
-**synchronize** (required)
+**synchronize** (facultative)
 
 paramètre permettant la synchronisation des ias, peut prendre 3 valeurs :  
-state.OFF : ne synchronisera pas vos ias  
+state.OFF **(valeur par défaut)** : ne synchronisera pas vos ias  
 state.ASK : demande au lancement si le script doit synchroniser les ias  
 state.ON : synchronisera systématiquement les ias
 
