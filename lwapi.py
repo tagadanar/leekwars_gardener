@@ -68,7 +68,6 @@ class lwapi:
 		eid = e['id']
 		# launch the fight
 		r = self.s.post("%s/garden/start-team-fight/%s"%(self.rooturl,eid), headers=self.headers, data={'composition_id':team_id,'target_id':eid})
-		breakpoint()
 		fight_id = r.json()['fight']
 		return fight_id
 
@@ -88,7 +87,7 @@ class lwapi:
 		return enemy
 
 	# wait for fight result then print it
-	def wait_fight_result(self, fight_id, is_farmer):
+	def wait_fight_result(self, fight_id, fight_type):
 		firstwait = True
 		while True:
 			r = self.s.get("%s/fight/get/%s"%(self.rooturl,fight_id), headers=self.headers, data={'fight_id':fight_id})
@@ -105,12 +104,16 @@ class lwapi:
 				continue
 			elif winner>=0:
 				win = g.WINNERSWITCH.get(winner, 'WTF?')
-				if is_farmer:
+				if fight_type == g.FIGHT_TYPE_FARMER:
 					myTalent = result['report']['farmer1']['talent'] + result['report']['farmer1']['talent_gain']
 					enTalent = result['report']['farmer2']['talent'] + result['report']['farmer2']['talent_gain']
 					print("\r%s %s (%s) vs %s (%s)"%(win, result['report']['farmer1']['name'], myTalent, result['report']['farmer2']['name'], enTalent))
-				else:
+				elif fight_type == g.FIGHT_TYPE_SOLO:
 					print("\r%s %s -lvl%s (%s) vs %s (%s)"%(win, result['leeks1'][0]['name'], result['leeks1'][0]['level'], result['leeks1'][0]['talent'], result['leeks2'][0]['name'], result['leeks2'][0]['talent']))
+				elif fight_type == g.FIGHT_TYPE_TEAM:
+					print("\r%s %s -lvl%s (%s) vs %s (%s)"%(win, result['team1'][0]['name'], result['team1'][0]['level'], result['team1'][0]['talent'], result['team2'][0]['name'], result['team2'][0]['talent']))
+				else:
+					print("%sunknown fight_type:%s %s%s%s"%(bcolors.FAIL,bcolors.ENDC,bcolors.HEADER,fight_type,bcolors.ENDC))
 				sys.stdout.flush()
 				self.refresh_account_state()
 				return
@@ -163,6 +166,14 @@ class lwapi:
 	def get_leek(self, leek_id):
 		r = self.s.get("%s/leek/get/%s"%(self.rooturl,leek_id), data={'leek':leek_id})
 		return r.json()
+
+	def get_team_composition(self):
+		r = self.s.get("%s/garden/get"%self.rooturl)
+		if r:
+			return r.json()['garden']['my_compositions']
+		else:
+			print("%s%s%s when trying to get team composition on %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC))
+			return []
 
 	def register_tournament(self, leek_id):
 		if leek_id == None:

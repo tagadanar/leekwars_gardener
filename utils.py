@@ -17,13 +17,16 @@ class g:
 	LEEK_4= 4
 	DELAY = 2 # seconds between each check when waiting for fight result
 	WINNERSWITCH = {
-		0: bcolors.WARNING+"DRAW"+bcolors.ENDC,
-		1: bcolors.OKGREEN+"WIN "+bcolors.ENDC,
-		2: bcolors.FAIL+"LOSE"+bcolors.ENDC,
+		0: bcolors.WARNING+'DRAW'+bcolors.ENDC,
+		1: bcolors.OKGREEN+'WIN '+bcolors.ENDC,
+		2: bcolors.FAIL+'LOSE'+bcolors.ENDC,
 	}
 	LW_ROOT_DIR= 0 # reminder: id 0 is the root dir for leekwars
-	DOWNLOAD= "download"
-	UPLOAD  = "upload"
+	DOWNLOAD= 'download'
+	UPLOAD  = 'upload'
+	FIGHT_TYPE_SOLO= 'solo'
+	FIGHT_TYPE_FARMER= 'farmer'
+	FIGHT_TYPE_TEAM= 'team'
 
 class behavior:
 	BALANCED = 'BALANCED' # split fights between each leeks + farmer

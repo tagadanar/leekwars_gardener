@@ -91,22 +91,50 @@ def main():
 		if account.get('goals'):
 			todo.trySpendCapital()
 
+		# if speedrunning print
+		if should_speedrun:
+			sys.stdout.write('speedrunning')
+			sys.stdout.flush()
+
 		# try fighting
 		if should_fight:
 			for leekid in todo.getGenerator():
-				is_farmer = leekid == g.FARMER
+				is_farmer = leekid == g.FARMER 
 				if is_farmer:
 					fight_id = api.farmer_fight()
 				else:
 					fight_id = api.solo_fight(leeks_to_ID[leekid])
-				if fight_id is None or should_speedrun:
+				# no fight, skip to next
+				if fight_id is None:
 					continue
-				
+				# if speedrunning, write & skip to next
+				if should_speedrun:
+					sys.stdout.write('.')
+					sys.stdout.flush()
+					continue
 				# waiting for result
-				api.wait_fight_result(fight_id, is_farmer)
+				fight_type = g.FIGHT_TYPE_FARMER if is_farmer else g.FIGHT_TYPE_SOLO
+				api.wait_fight_result(fight_id, fight_type)
 				# try spending capital after each fight
 				if account.get('goals'):
 					todo.trySpendCapital()
+			# team fight
+			if account.get('team_limit'):
+				for teamid in todo.getTeamGenerator():
+					fight_id = api.team_fight(teamid)
+					# no fight, skip to next
+					if fight_id is None:
+						continue
+					# if speedrunning, write & skip to next
+					if should_speedrun:
+						sys.stdout.write('.')
+						sys.stdout.flush()
+						continue
+					# waiting for result
+					api.wait_fight_result(fight_id, g.FIGHT_TYPE_TEAM)
+					# try spending capital after each fight
+					if account.get('goals'):
+						todo.trySpendCapital()
 
 		# display status when fights are done
 		if should_fight and not should_speedrun and account.get('behavior') != behavior.NONE:

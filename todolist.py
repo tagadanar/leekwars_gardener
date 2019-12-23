@@ -10,6 +10,7 @@ class Todolist:
 		self.goals = account.get('goals')
 		self.tournaments = account.get('tournaments')
 		self.limit = account.get('limit')
+		self.team_limit = account.get('team_limit')
 		self.synchronize = account.get('synchronize')
 		self.api = api
 		self.fights = api.farmer['fights']
@@ -111,6 +112,12 @@ class Todolist:
 		while nb > 0:
 			yield g.FARMER
 			nb -= 1 
+
+	def getTeamGenerator(self):
+		for compo in self.api.get_team_composition():
+			max_fight = compo['fights'] - self.team_limit
+			for fight in range(0, max_fight):
+				yield compo['id']
 
 	def registerTournaments(self):
 		for leek in self.tournaments:
