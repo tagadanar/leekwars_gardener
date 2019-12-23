@@ -1,4 +1,4 @@
-from utils import g, behavior, state, goal
+from utils import g, behavior, state, goal, strategy
 
 #################################################################
 # Declaring accounts
@@ -12,6 +12,7 @@ class Accounts:
 			'login': 'myAccount',
 			'password': 'myPassword',
 			'behavior': behavior.EQUALIZE,
+			'strategy': strategy.RANDOM,
 			'limit': 50, # if behavior != TODOLIST, how many fights we always keep in stock
 			'todolist': { # only needed if behavior = TODOLIST
 				g.FARMER: 0,
