@@ -36,19 +36,19 @@ chaque compte utilisateur est représenté par un dictionnaire {} python posséd
 
 **behavior** correspond à un comportement à adopter dans le potager une fois connecté, actuellement les comportements disponibles sont :
 
-_NONE_ : ne fait rien de plus que se connecter au compte (refresh la dernière connexion, permet la synchronisation et l'inscription aux tournois)  
-_TODOLIST_ : execute la todolist, sans se soucier de la **limit** pour le stock de fight  
-_FARMING_ : ne fait que des fights éleveurs jusqu'à atteindre **limit**  
-_EQUALIZE_ : regroupe le niveau des leeks puis fait des fights farmer jusqu'à atteindre **limit**  
-_BALANCED_ : tente de répartir les fights disponibles entre chaque leek et l'éleveur jusqu'à atteindre **limit**  
-_SOLO\_BALANCED_ : tente de répartir les fights disponibles entre chaque leek jusqu'à atteindre **limit**  
-_SOLO\_X_ : ne fait que des fights solo avec le leek *X* (X étant une valeur entre 1 et 4 correspondant au leek désiré) jusqu'à atteindre **limit**   
+- _NONE_ : ne fait rien de plus que se connecter au compte (refresh la dernière connexion, permet la synchronisation et l'inscription aux tournois)  
+- _TODOLIST_ : execute la todolist, sans se soucier de la **limit** pour le stock de fight  
+- _FARMING_ : ne fait que des fights éleveurs jusqu'à atteindre **limit**  
+- _EQUALIZE_ : regroupe le niveau des leeks puis fait des fights farmer jusqu'à atteindre **limit**  
+- _BALANCED_ : tente de répartir les fights disponibles entre chaque leek et l'éleveur jusqu'à atteindre **limit**  
+- _SOLO\_BALANCED_ : tente de répartir les fights disponibles entre chaque leek jusqu'à atteindre **limit**  
+- _SOLO\_X_ : ne fait que des fights solo avec le leek *X* (X étant une valeur entre 1 et 4 correspondant au leek désiré) jusqu'à atteindre **limit**   
 
 **strategy** correspond à la stratégie à adopter pour choisir l'adversaire dans le potager, actuellement les comportements disponibles sont :
 
-_RANDOM_ : choisi un adversaire aléatoire (par défaut si aucune stratégie n'est défini pour le compte)
-_BEST_ : choisi l'adversaire au talent le plus élevé
-_WORST_ : choisi l'adversaire au talent le plus bas
+- _RANDOM_ : choisi un adversaire aléatoire (par défaut si aucune stratégie n'est défini pour le compte)
+- _BEST_ : choisi l'adversaire au talent le plus élevé
+- _WORST_ : choisi l'adversaire au talent le plus bas
 
 **buy_fight** correspond à un boolean, si il est *True*, le script tentera d'acheter un pack de combat avec des habs **avant le run**  
 les fights seront donc utilisées immédiatement après par le script, à moins que la **limit** ou la todolist l'en empêche.
