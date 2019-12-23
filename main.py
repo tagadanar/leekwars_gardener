@@ -52,6 +52,10 @@ def main():
 			should_fight = True
 		elif o in ("-nf", "--no-fight"):
 			should_fight = False
+		elif o in ("-sr", "--speedrun"):
+			should_synchronize = True
+		elif o in ("-nsr", "--no-speedrun"):
+			should_synchronize = False
 		elif o in ("-s", "--sync"):
 			should_synchronize = True
 		elif o in ("-ns", "--no-sync"):

@@ -27,7 +27,7 @@ class lwapi:
 		self.s.get("%s/garden/get-farmer-opponents"%self.rooturl, headers=self.headers)
 		return self.farmer
 
-	# launch a solo fight against random adv, return fight_id
+	# launch a solo fight against an adv, return fight_id
 	def solo_fight(self, leekid):
 		# pick a rand adv from sologarden
 		r = self.s.get("%s/garden/get-leek-opponents/%s"%(self.rooturl,leekid), headers=self.headers, data={'leek_id':leekid})
@@ -43,7 +43,7 @@ class lwapi:
 		fight_id = r.json()['fight']
 		return fight_id
 		
-	# launch a farmer fight against random adv, return fight_id
+	# launch a farmer fight against an adv, return fight_id
 	def farmer_fight(self):
 		# pick a rand adv from farmergarden
 		r = self.s.get("%s/garden/get-farmer-opponents"%self.rooturl, headers=self.headers)
@@ -56,6 +56,19 @@ class lwapi:
 		eid = e['id']
 		# launch the fight
 		r = self.s.post("%s/garden/start-farmer-fight/%s"%(self.rooturl,eid), headers=self.headers, data={'target_id':eid})
+		fight_id = r.json()['fight']
+		return fight_id
+
+	# launch a team fight against an adv, return fight_id
+	def team_fight(self, team_id):
+		# pick a rand adv from farmergarden
+		r = self.s.get("%s/garden/get-composition-opponents/%s"%(self.rooturl,team_id), headers=self.headers, data={'composition':team_id})
+		garden = r.json()['opponents']
+		e = self.get_opponent(garden)
+		eid = e['id']
+		# launch the fight
+		r = self.s.post("%s/garden/start-team-fight/%s"%(self.rooturl,eid), headers=self.headers, data={'composition_id':team_id,'target_id':eid})
+		breakpoint()
 		fight_id = r.json()['fight']
 		return fight_id
 

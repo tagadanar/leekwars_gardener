@@ -130,5 +130,7 @@ certaines commandes peuvent être ajouté à l'appel pour ignorer la valeur d'un
 
 **-f --fight** fait les combats même si **fight** est config sur OFF  
 **-nf --no-fight** ne fait pas les combats même si **fight** est config sur ON  
-**-s --sync** fait la synchronisation de l'ia même si **synchronize** est sur OFF
+**-sr --speedrun** fait un speedrun même si **speedrun** est config sur OFF  
+**-nsr --no-speedrun** ne fait pas un speedrun même si **speedrun** est config sur ON  
+**-s --sync** fait la synchronisation de l'ia même si **synchronize** est sur OFF  
 **-ns --no-sync** ne fait pas la synchronisation de l'ia même si **synchronize** est sur ON
