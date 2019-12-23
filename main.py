@@ -53,10 +53,7 @@ def main():
 
 	# main loop
 	for account in Accounts.list:
-		login = account.get('login')
-		password = account.get('password')
-
-		api = lwapi(login, password)
+		api = lwapi(account)
 		# connecting to leekwars
 		farmer = api.connect()
 		

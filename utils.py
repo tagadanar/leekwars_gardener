@@ -42,6 +42,11 @@ class state:
 	ASK= 1
 	ON = 2
 
+class strategy:
+	RANDOM = 'random'
+	BEST = 'best'
+	WORST = 'worst'
+
 class goal:
 	NONE = 'NONE'
 	FOCUS_LIFE = 'life'

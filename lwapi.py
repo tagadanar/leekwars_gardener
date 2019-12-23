@@ -4,15 +4,16 @@ import random
 import time
 import sys
 
-from utils import bcolors, g
+from utils import bcolors, g, strategy
 
 #################################################################
 # leekwars API
 #################################################################
 class lwapi:
-	def __init__(self, login, password):
-		self.login = login
-		self.password = password
+	def __init__(self, account):
+		self.login = account.get('login')
+		self.password = account.get('password')
+		self.strategy = account.get('strategy')
 		self.s = requests.session()
 		self.rooturl = "https://leekwars.com/api"
 
@@ -35,7 +36,7 @@ class lwapi:
 			print("%sNo one in the garden%s when trying to do a solo fight with %s%s%s"%(bcolors.FAIL,bcolors.ENDC,bcolors.OKBLUE,self.farmer['leeks'][leek_id]['name'],bcolors.ENDC))
 			sys.stdout.flush()
 			return None
-		e = random.choice(garden)
+		e = self.get_opponent(garden)
 		eid = e['id']
 		# launch the fight
 		r = self.s.post("%s/garden/start-solo-fight/%s/%s"%(self.rooturl,leekid,eid), headers=self.headers, data={'leek_id':leekid, 'target_id':eid})
@@ -51,12 +52,27 @@ class lwapi:
 			print("%sNo one in the garden%s when trying to do a farmer fight with %s%s%s"%(bcolors.FAIL,bcolors.ENDC,bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC))
 			sys.stdout.flush()
 			return None
-		e = random.choice(garden)
+		e = self.get_opponent(garden)
 		eid = e['id']
 		# launch the fight
 		r = self.s.post("%s/garden/start-farmer-fight/%s"%(self.rooturl,eid), headers=self.headers, data={'target_id':eid})
 		fight_id = r.json()['fight']
 		return fight_id
+
+	# pick an adv in the garden
+	def get_opponent(self, garden):
+		enemy = None
+		if self.strategy == strategy.RANDOM:
+			enemy = random.choice(garden)
+		elif self.strategy == strategy.WORST:
+			for e in garden:
+				if enemy == None or e['talent']<enemy['talent']:
+					enemy = e
+		elif self.strategy == strategy.BEST:
+			for e in garden:
+				if enemy == None or e['talent']<enemy['talent']:
+					enemy = e
+		return enemy
 
 	# wait for fight result then print it
 	def wait_fight_result(self, fight_id, is_farmer):
