@@ -14,6 +14,7 @@ class Accounts:
 			'password': 'myPassword',
 			'behavior': behavior.EQUALIZE,
 			'strategy': strategy.RANDOM,
+			'team_limit': 5,
 			'limit': 50, # if behavior != TODOLIST, how many fights we always keep in stock
 			'todolist': { # only needed if behavior = TODOLIST
 				g.FARMER: 0,
