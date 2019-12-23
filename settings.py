@@ -7,6 +7,7 @@ class Accounts:
 	fight = state.ON
 	shutdown = state.OFF
 	synchronize = state.OFF
+	speedrun = state.OFF
 	list= [
 		{
 			'login': 'myAccount',
