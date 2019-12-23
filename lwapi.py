@@ -165,6 +165,14 @@ class lwapi:
 		else:
 			print("%s%s%s when trying to spend %s on %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,stats,bcolors.OKBLUE,self.farmer['leeks'][leek_id]['name'],bcolors.ENDC))
 
+	def buy_fights(self):
+		r = self.s.post("%s/market/buy-habs"%self.rooturl, data={'item_id':'100-fights'})
+		if r:
+			print("%sbuying 100 fights%s: %s"%(bcolors.OKBLUE,bcolors.ENDC,r.text))
+		else:
+			print("%s%s%s when trying to buy %s100 fights%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.OKBLUE,bcolors.ENDC))
+
+
 	def get_leek(self, leek_id):
 		r = self.s.get("%s/leek/get/%s"%(self.rooturl,leek_id), data={'leek':leek_id})
 		return r.json()

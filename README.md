@@ -25,7 +25,9 @@ chaque compte utilisateur est représenté par un dictionnaire {} python posséd
 - password (required)
 - behavior (required)
 - strategy (facultative)
+- buy_fight (facultative)
 - limit (required si behavior != TODOLIST || behavior != NONE)
+- team_limit (facultative)
 - todolist (required si behavior == TODOLIST)
 - tournaments (facultative)
 - goals (facultative)
@@ -46,6 +48,13 @@ _SOLO\_X_ : ne fait que des fights solo avec le leek *X* (X étant une valeur en
 _RANDOM_ : choisi un adversaire aléatoire (par défaut si aucune stratégie n'est défini pour le compte)
 _BEST_ : choisi l'adversaire au talent le plus élevé
 _WORST_ : choisi l'adversaire au talent le plus bas
+
+**buy_fight** correspond à un boolean, si il est *True*, le script tentera d'acheter un pack de combat avec des habs **à la fin du run**  
+pas au début parce que j'ai la flemme de refresh le nombre de fights... je ferais surement un truc un peu plus clean quand j'aurais la motiv :)
+
+**team_limit** si il n'est pas renseigné, ne fera pas de team fight.  
+Si il est renseigné, ce doit être un entier positif (0 à n) indiquant le nombre de fight à garder (de la même manière que fonctionne **limit**)  
+Le script tentera de lancer des fights de team avec toutes les compos où vos leeks sont présents, jusqu'à atteindre **team_limit**
 
 **todolist** correspond à un dictionnaire {}, avec pour clé les constantes de la class g (cf. utils.py), où FARMER représente les combats d'éleveurs, et LEEK\_1/2/3/4 représentent les 4 leeks d'un compte, dans l'ordre de leur création (et donc dans leur ordre sur le site)  
 les valeurs sont le nombre de combats à réaliser avec chaque clé.
