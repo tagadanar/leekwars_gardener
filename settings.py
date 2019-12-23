@@ -14,7 +14,7 @@ class Accounts:
 			'password': 'myPassword',
 			'behavior': behavior.EQUALIZE, # how we spend fights in the garden
 			'strategy': strategy.RANDOM, # how we choose opponent in the garden
-			'buy_fight': False # will try to buy fights if set to true 
+			'buy_fight': False, # will try to buy fights if set to True
 			'limit': 50, # if behavior != TODOLIST, how many fights we always keep in stock
 			'team_limit': 10, # to not do any team fight, comment this line, or set it to 20 or above (0 is minimum)
 			'todolist': { # only needed if behavior = TODOLIST
