@@ -117,7 +117,7 @@ class Todolist:
 			if leek == g.FARMER:
 				self.api.register_tournament(leek)
 			else:
-				self.api.register_tournament(self.api.leeks_to_ID[leek])
+				self.api.register_tournament(self.api.leeks_to_ID.get(leek, None))
 	
 	def trySpendCapital(self):
 		indexleek = 0

@@ -136,7 +136,9 @@ class lwapi:
 		return r.json()
 
 	def register_tournament(self, leek_id):
-		if leek_id == g.FARMER:
+		if leek_id == None:
+			print("%sleek_id_none%s when trying to register tournament"%(bcolors.FAIL,bcolors.ENDC))
+		elif leek_id == g.FARMER:
 			r = self.s.post("%s/farmer/register-tournament"%self.rooturl)
 			if r:
 				print("%s%s%s registered to tournament"%(bcolors.OKBLUE,self.farmer["name"],bcolors.ENDC))
