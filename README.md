@@ -4,7 +4,7 @@ script en python3 qui permet de gérer ses comptes à travers l'api [leekwars](h
 - attend le résultat de chaque fight pour lancer la suivante
 - dépense le capital dans une stat spécifique
 - s'incrit aux tournois
-- permet la synchronisation des ias entre les comptes 
+- permet la synchronisation des ias entre les comptes et avec du code local
 
 ![gardener](https://i.imgur.com/L6sgsHJ.png)
 
@@ -24,6 +24,7 @@ chaque compte utilisateur est représenté par un dictionnaire {} python posséd
 - login (required)
 - password (required)
 - behavior (required)
+- strategy (facultative)
 - limit (required si behavior != TODOLIST || behavior != NONE)
 - todolist (required si behavior == TODOLIST)
 - tournaments (facultative)
@@ -39,6 +40,12 @@ _EQUALIZE_ : regroupe le niveau des leeks puis fait des fights farmer jusqu'à a
 _BALANCED_ : tente de répartir les fights disponibles entre chaque leek et l'éleveur jusqu'à atteindre **limit**  
 _SOLO\_BALANCED_ : tente de répartir les fights disponibles entre chaque leek jusqu'à atteindre **limit**  
 _SOLO\_X_ : ne fait que des fights solo avec le leek *X* (X étant une valeur entre 1 et 4 correspondant au leek désiré) jusqu'à atteindre **limit**   
+
+**strategy** correspond à la stratégie à adopter pour choisir l'adversaire dans le potager, actuellement les comportements disponibles sont :
+
+_RANDOM_ : choisi un adversaire aléatoire (par défaut si aucune stratégie n'est défini pour le compte)
+_BEST_ : choisi l'adversaire au talent le plus élevé
+_WORST_ : choisi l'adversaire au talent le plus bas
 
 **todolist** correspond à un dictionnaire {}, avec pour clé les constantes de la class g (cf. utils.py), où FARMER représente les combats d'éleveurs, et LEEK\_1/2/3/4 représentent les 4 leeks d'un compte, dans l'ordre de leur création (et donc dans leur ordre sur le site)  
 les valeurs sont le nombre de combats à réaliser avec chaque clé.

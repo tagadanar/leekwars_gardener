@@ -13,7 +13,7 @@ class lwapi:
 	def __init__(self, account):
 		self.login = account.get('login')
 		self.password = account.get('password')
-		self.strategy = account.get('strategy')
+		self.strategy = account.get('strategy', None)
 		self.s = requests.session()
 		self.rooturl = "https://leekwars.com/api"
 
@@ -62,7 +62,7 @@ class lwapi:
 	# pick an adv in the garden
 	def get_opponent(self, garden):
 		enemy = None
-		if self.strategy == strategy.RANDOM:
+		if self.strategy == None or self.strategy == strategy.RANDOM:
 			enemy = random.choice(garden)
 		elif self.strategy == strategy.WORST:
 			for e in garden:
