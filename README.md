@@ -49,8 +49,8 @@ _RANDOM_ : choisi un adversaire aléatoire (par défaut si aucune stratégie n'e
 _BEST_ : choisi l'adversaire au talent le plus élevé
 _WORST_ : choisi l'adversaire au talent le plus bas
 
-**buy_fight** correspond à un boolean, si il est *True*, le script tentera d'acheter un pack de combat avec des habs **à la fin du run**  
-pas au début parce que j'ai la flemme de refresh le nombre de fights... je ferais surement un truc un peu plus clean quand j'aurais la motiv :)
+**buy_fight** correspond à un boolean, si il est *True*, le script tentera d'acheter un pack de combat avec des habs **avant le run**  
+les fights seront donc utilisées immédiatement après par le script, à moins que la **limit** ou la todolist l'en empêche.
 
 **team_limit** si il n'est pas renseigné, ne fera pas de team fight.  
 Si il est renseigné, ce doit être un entier positif (0 à n) indiquant le nombre de fight à garder (de la même manière que fonctionne **limit**)  

@@ -87,6 +87,10 @@ def main():
 		if account.get('tournaments'):
 			todo.registerTournaments()
 
+		# try to buy fights
+		if account.get('buy_fight'):
+			api.buy_fights()
+
 		# try spending capital once
 		if account.get('goals'):
 			todo.trySpendCapital()
@@ -135,10 +139,6 @@ def main():
 					# try spending capital after each fight
 					if account.get('goals'):
 						todo.trySpendCapital()
-
-		# try to buy fights
-		if account.get('buy_fight'):
-			api.buy_fights()
 
 		# display status when fights are done
 		if should_fight and not should_speedrun and account.get('behavior') != behavior.NONE:
