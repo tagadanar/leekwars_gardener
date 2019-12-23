@@ -111,9 +111,11 @@ class lwapi:
 				elif fight_type == g.FIGHT_TYPE_SOLO:
 					print("\r%s %s -lvl%s (%s) vs %s (%s)"%(win, result['leeks1'][0]['name'], result['leeks1'][0]['level'], result['leeks1'][0]['talent'], result['leeks2'][0]['name'], result['leeks2'][0]['talent']))
 				elif fight_type == g.FIGHT_TYPE_TEAM:
-					print("\r%s %s -lvl%s (%s) vs %s (%s)"%(win, result['team1'][0]['name'], result['team1'][0]['level'], result['team1'][0]['talent'], result['team2'][0]['name'], result['team2'][0]['talent']))
+					myTalent = result['report']['team1']['talent'] + result['report']['team1']['talent_gain']
+					enTalent = result['report']['team2']['talent'] + result['report']['team2']['talent_gain']
+					print("\r%s %s (%s) vs %s (%s)"%(win, result['report']['team1']['name'], myTalent, result['report']['team2']['name'], enTalent))
 				else:
-					print("%sunknown fight_type:%s %s%s%s"%(bcolors.FAIL,bcolors.ENDC,bcolors.HEADER,fight_type,bcolors.ENDC))
+					print("\r%sunknown fight_type:%s %s%s%s"%(bcolors.FAIL,bcolors.ENDC,bcolors.HEADER,fight_type,bcolors.ENDC))
 				sys.stdout.flush()
 				self.refresh_account_state()
 				return

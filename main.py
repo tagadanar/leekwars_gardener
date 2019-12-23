@@ -119,7 +119,7 @@ def main():
 				if account.get('goals'):
 					todo.trySpendCapital()
 			# team fight
-			if account.get('team_limit'):
+			if account.get('team_limit') != None:
 				for teamid in todo.getTeamGenerator():
 					fight_id = api.team_fight(teamid)
 					# no fight, skip to next
