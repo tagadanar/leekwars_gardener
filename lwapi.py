@@ -91,7 +91,7 @@ class lwapi:
 		firstwait = True
 		while True:
 			r = self.s.get("%s/fight/get/%s"%(self.rooturl,fight_id), headers=self.headers, data={'fight_id':fight_id})
-			result = r.json()['fight']
+			result = r.json()
 			winner = result['winner']
 			if winner==-1: # Fight isn't resolved yet
 				if firstwait:
