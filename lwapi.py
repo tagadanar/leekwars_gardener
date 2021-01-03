@@ -95,7 +95,14 @@ class lwapi:
 			winner = result['winner']
 			if winner==-1: # Fight isn't resolved yet
 				if firstwait:
-					sys.stdout.write('waiting.')
+					if fight_type == g.FIGHT_TYPE_FARMER:
+						sys.stdout.write("%s vs %s."%(result['team1_name'], result['team2_name']))
+					elif fight_type == g.FIGHT_TYPE_SOLO:
+						sys.stdout.write("%s -lvl%s (%s) vs %s (%s)."%(result['leeks1'][0]['name'], result['leeks1'][0]['level'], result['leeks1'][0]['talent'], result['leeks2'][0]['name'], result['leeks2'][0]['talent']))
+					elif fight_type == g.FIGHT_TYPE_TEAM:
+						sys.stdout.write("%s vs %s."%(result['team1_name'], result['team2_name']))
+					else:
+						print("\r%sunknown fight_type:%s %s%s%s"%(bcolors.FAIL,bcolors.ENDC,bcolors.HEADER,fight_type,bcolors.ENDC))
 					firstwait = False
 				else:
 					sys.stdout.write('.')
@@ -204,7 +211,7 @@ class lwapi:
 
 	def get_ais(self):
 		r = self.s.get("%s/ai/get-farmer-ais"%self.rooturl)
-		print(r.json()['folders'])
+		#print(r.json())
 		return r.json()
 
 	def get_ai(self, ai_id):
