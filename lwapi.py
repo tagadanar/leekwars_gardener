@@ -82,7 +82,7 @@ class lwapi:
 					enemy = e
 		elif self.strategy == strategy.BEST:
 			for e in garden:
-				if enemy == None or e['talent']<enemy['talent']:
+				if enemy == None or e['talent']>enemy['talent']:
 					enemy = e
 		return enemy
 
