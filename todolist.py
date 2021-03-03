@@ -193,13 +193,14 @@ class Todolist:
 			ais = self.api.get_ais()
 			self.recursiv_create(ais['ais'], ais['folders'], g.LW_ROOT_DIR, directory)
 		elif transfer == g.UPLOAD:
+            ignored = self.synchronize['ignore']
 			ais = self.api.get_ais()
-			self.recursiv_read(ais, g.LW_ROOT_DIR, directory)
+			self.recursiv_read(ais, g.LW_ROOT_DIR, directory, ignored)
 		else:
 			print("%sunknown transfer direction:%s %s"%(bcolors.FAIL, bcolors.ENDC, transfer))
 
-	def recursiv_read(self, ais, dir_id, directory):
-		ldir = os.listdir(directory)
+	def recursiv_read(self, ais, dir_id, directory, ignored):
+        ldir = [x for x in os.listdir(directory) if x not in ignored]
 		for name in ldir:
 			file_path = os.path.join(directory,name)
 			if os.path.isfile(file_path):
@@ -210,7 +211,7 @@ class Todolist:
 			if os.path.isdir(dir_path):
 				lw_item = next((fd for fd in ais['folders'] if fd['name'] == name), None)
 				folder_id = self.api.create_dir(dir_path, name, dir_id, lw_item)
-				self.recursiv_read(ais, folder_id, dir_path)
+				self.recursiv_read(ais, folder_id, dir_path, ignored)
 
 	def recursiv_create(self, ais, folders, parent_id, root_id):
 		for ai in ais:
