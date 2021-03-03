@@ -46,5 +46,12 @@ class Accounts:
 			'login': 'myAccount2',
 			'password': 'myPassword2',
 			'behavior': behavior.NONE,
+            'synchronize': { # /!\ careful with this /!\
+				'directory': './path_to_ia_dir', # local directory to read/write
+				'transfer': g.UPLOAD,
+                'ignore': [
+                    '.git'
+                ],
+			},
 		},
 	]
