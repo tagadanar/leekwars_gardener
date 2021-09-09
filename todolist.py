@@ -173,11 +173,13 @@ class Todolist:
 
 					elif lgoal == goal.FOCUS_FREQUENCY:
 						# you weirdo !
+						final = lCapital
 						stats[lgoal] = lCapital
 						
-					elif lgoal == FOCUS_TP or \
- 						lgoal == FOCUS_MP:
+					elif lgoal == goal.FOCUS_TP or \
+ 						lgoal == goal.FOCUS_MP:
 						# lazy me doing stoopid shit, TODO fixme
+						final = lCapital
 						stats[lgoal] = 1
 					if final > 0:
 						stats = json.dumps(stats)
