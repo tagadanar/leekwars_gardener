@@ -65,9 +65,11 @@ le script tentera d'inscrire aux tournois chaque valeur dans la liste.
 
 **goals** correspond à un dictionnaire {}, avec pour clé les constantes de la class g, uniquement LEEK\_1/2/3/4, auquel on peut associer un comportement pour la dépense de point de capital (cf. la class goals dans utils.py)
 
-**synchronize** correspond à un dictionnaire {} avec deux sous params:  
-- **directory** qui indique le path (relatif à l'emplacement du main.py ou absolu) du dossier contenant l'ia
-- **transfer** qui indique le sens de la synchronisation, montante (g.UPLOAD) ou descendante (g.DOWNLOAD)
+**synchronize** correspond à un dictionnaire {} avec jusqu'à 4 sous params:  
+- **directory** (required) qui indique le path (relatif à l'emplacement du main.py ou absolu) du dossier contenant l'ia
+- **transfer** (required) qui indique le sens de la synchronisation, montante (g.UPLOAD) ou descendante (g.DOWNLOAD)
+- **version** (facultatif) précise la version du script créé au moment de l'upload si le fichier n'existe pas, '1.1' par défaut si non précisé, les seuls valeurs valides à ma connaissance sont 1.0 et 1.1 actuellement
+- **ignore** (facultatif) un tableau de string indiquant les fichiers que vous ne voulez pas upload sur leekwars, pour le moment pas de regex, juste une comparaison de string simple, mais ça permet déjà d'ignorer le .git ^^
 
 ### configurations générales
 
