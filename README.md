@@ -134,7 +134,6 @@ qui mettra à jour les ias de vos autres comptes sur le site depuis l'ia récup�
 Une autre configuration pourrait être d'avoir tous vos comptes en UPLOAD, pour pouvoir coder en local et rapidement répercuter les changements sur tous vos comptes.
 
 NB. la synchronisation ne fait pas de purge, elle se contente d'écraser les fichiers déjà existant avec le nouveau contenu, et créer les fichiers/dossiers inexistant.  
-NB² pour le moment toutes les ias sont upload en lsv1, quand le lsv2 arrivera je mettrais ce script à jour, et un nouveau param sera disponible pour préciser la version du langage.
 
 ### command line option
 
