@@ -186,6 +186,8 @@ class Todolist:
 						self.api.spend_capital(leekid, stats)
 
 	def trySynchronize(self):
+		if self.synchronize == None:
+			return print("%sNo synchronize config for this account%s"%(bcolors.FAIL, bcolors.ENDC))
 		transfer = self.synchronize['transfer']
 		directory = self.synchronize['directory']
 		if transfer == g.DOWNLOAD:
@@ -220,8 +222,8 @@ class Todolist:
 			if ai['folder'] == parent_id:
 				code = self.api.get_ai(ai['id'])
 				file_path = os.path.join(root_id,ai['name'])
-				with open(file_path, 'w') as writer: 
-					writer.write(code.encode('utf-8'))
+				with open(file_path, 'w') as writer:
+					writer.write(code)#.encode('utf-8')
 					print("%swriting%s %s"%(bcolors.OKBLUE, bcolors.ENDC, file_path))
 		for d in folders:
 			if d['folder'] == parent_id:

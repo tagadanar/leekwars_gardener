@@ -14,6 +14,9 @@ class lwapi:
 		self.login = account.get('login')
 		self.password = account.get('password')
 		self.strategy = account.get('strategy', None)
+		self.version = account.get('synchronize', None)
+		if self.version != None:
+			self.version = self.version.get('version', '1.1')
 		self.s = requests.session()
 		self.rooturl = "https://leekwars.com/api"
 
@@ -221,7 +224,7 @@ class lwapi:
 	def create_ai(self, file_path, file_name, dir_id,  lw_item):
 		if lw_item == None:
 			#reminder false is for v1, should be a param of every account when v2 is out !
-			r = self.s.post("%s/ai/new/%s/%s"%(self.rooturl,dir_id,'false'), data={'folder_id':dir_id, 'v2':'false'})
+			r = self.s.post("%s/ai/new/%s/%s"%(self.rooturl,dir_id,'false'), data={'folder_id':dir_id, 'version':self.version})
 			if r:
 				lw_id = r.json()['ai']['id']
 				r = self.s.post("%s/ai/rename/%s/%s"%(self.rooturl,lw_id,file_name), data={'ai_id':lw_id, 'new_name':file_name})
