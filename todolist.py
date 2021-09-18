@@ -222,8 +222,8 @@ class Todolist:
 			if ai['folder'] == parent_id:
 				code = self.api.get_ai(ai['id'])
 				file_path = os.path.join(root_id,ai['name'])
-				with open(file_path, 'w') as writer:
-					writer.write(code)#.encode('utf-8')
+				with open(file_path, mode='w', encoding="utf-8") as writer:
+					writer.write(code)
 					print("%swriting%s %s"%(bcolors.OKBLUE, bcolors.ENDC, file_path))
 		for d in folders:
 			if d['folder'] == parent_id:

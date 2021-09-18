@@ -223,7 +223,6 @@ class lwapi:
 
 	def create_ai(self, file_path, file_name, dir_id,  lw_item):
 		if lw_item == None:
-			#reminder false is for v1, should be a param of every account when v2 is out !
 			r = self.s.post("%s/ai/new/%s/%s"%(self.rooturl,dir_id,'false'), data={'folder_id':dir_id, 'version':self.version})
 			if r:
 				lw_id = r.json()['ai']['id']
@@ -234,7 +233,7 @@ class lwapi:
 				print("%s%s%s when trying to create file %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
 		else:
 			lw_id = lw_item['id']
-		with open(file_path, 'r') as reader:
+		with open(file_path, mode="r", encoding="utf-8") as reader:
 			code = reader.read()
 			r = self.s.post("%s/ai/save"%self.rooturl, data={'ai_id':lw_id,'code':code})
 			if r:
