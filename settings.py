@@ -49,7 +49,8 @@ class Accounts:
 			'synchronize': { # /!\ careful with this /!\
 				'directory': './path_to_ia_dir', # local directory to read/write
 				'transfer': g.UPLOAD,
-				'version': '1.1', # when uploading, leekscript version of the script when created. default to 1.1 if unspecified
+				'version': '11', # when uploading, leekscript version of the script when created. default to 11 if unspecified
+				# I don't handle different file version for the moment. valid value are 1 and 11 (for 1.1 version)
 				'ignore': [
 					'.git', # files to ignore when uploading the directory to leekwars.com, usefull when you git your ia
 					'README.MD'
