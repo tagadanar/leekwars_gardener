@@ -234,8 +234,12 @@ class lwapi:
 		else:
 			lw_id = lw_item['id']
 		with open(file_path, mode="r", encoding="utf-8") as reader:
-			code = reader.read()
-			r = self.s.post("%s/ai/save"%self.rooturl, data={'ai_id':lw_id,'code':code})
+			try:
+				code = reader.read()
+			except UnicodeDecodeError as e:
+				print("%s%s%s when trying to update file %s%s%s (check your encoding, file must be in utf-8)"%(bcolors.FAIL,e,bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
+			if code:
+				r = self.s.post("%s/ai/save"%self.rooturl, data={'ai_id':lw_id,'code':code})
 			if r:
 				print("%supdated%s file %s%s%s"%(bcolors.OKBLUE,bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
 			else:
