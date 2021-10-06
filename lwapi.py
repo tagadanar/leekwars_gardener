@@ -226,7 +226,7 @@ class lwapi:
 			r = self.s.post("%s/ai/new/%s/%s"%(self.rooturl,dir_id,'false'), data={'folder_id':dir_id, 'version':self.version})
 			if r:
 				lw_id = r.json()['ai']['id']
-				r = self.s.post("%s/ai/rename/%s/%s"%(self.rooturl,lw_id,file_name), data={'ai_id':lw_id, 'new_name':file_name})
+				r = self.s.post("%s/ai/rename"%self.rooturl, data={'ai_id':lw_id, 'new_name':file_name})
 			if r:
 				print("%screated%s file %s%s%s"%(bcolors.OKBLUE,bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
 			else:
