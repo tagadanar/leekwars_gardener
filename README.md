@@ -18,6 +18,8 @@ nécessite [python3](https://www.python.org/downloads/) et [pip](https://pypi.or
 - pip install -r requirements.txt
 - python main.py
 
+sous windows, cmd et powershell n'interprète pas les codes couleurs, je recommande l'utilisation de [gitbash](https://gitforwindows.org/) ou [mingw](https://www.mingw-w64.org/) par exemple.
+
 ### settings.py
 
 chaque compte utilisateur est représenté par un dictionnaire {} python possédant les attributs suivants :
