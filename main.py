@@ -5,6 +5,8 @@ from utils import bcolors, g, behavior, state
 from lwapi import lwapi
 import os, sys
 
+# j'ajoute des commentaires super importants !
+
 def main():
 	#################################################################
 	# handling command line arguments
