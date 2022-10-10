@@ -5,9 +5,6 @@ from utils import bcolors, g, behavior, state
 from lwapi import lwapi
 import os, sys
 
-# je fais des dev sur ma branche example
-# blablabla
-
 def main():
 	#################################################################
 	# handling command line arguments
