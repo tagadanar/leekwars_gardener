@@ -70,7 +70,7 @@ le script tentera d'inscrire aux tournois chaque valeur dans la liste.
 **synchronize** correspond à un dictionnaire {} avec jusqu'à 4 sous params:  
 - **directory** (required) qui indique le path (relatif à l'emplacement du main.py ou absolu) du dossier contenant l'ia
 - **transfer** (required) qui indique le sens de la synchronisation, montante (g.UPLOAD) ou descendante (g.DOWNLOAD)
-- **version** (facultatif) précise la version du script créé au moment de l'upload si le fichier n'existe pas, '1.1' par défaut si non précisé, les seuls valeurs valides à ma connaissance sont 1 et 11 actuellement (11 = version 1.1 du leekscript, valeur par defaut)
+- **version** (facultatif) précise la version du script créé au moment de l'upload si le fichier n'existe pas, '1.1' par défaut si non précisé, les seuls valeurs valides à ma connaissance sont 1, 2, 3 et 4 actuellement
 - **ignore** (facultatif) un tableau de string indiquant les fichiers que vous ne voulez pas upload sur leekwars, pour le moment pas de regex, juste une comparaison de string simple, mais ça permet déjà d'ignorer le .git ^^
 
 ### configurations générales
@@ -129,7 +129,7 @@ puis sur tous vos comptes suivant une config :
 'synchronize': {
     'directory': './path_to_ia_dir',
     'transfer': g.UPLOAD,
-    'version': '11'
+    'version': '4'
 }
 ```
 qui mettra à jour les ias de vos autres comptes sur le site depuis l'ia récupéré sur le premier compte.
