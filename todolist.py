@@ -2,6 +2,9 @@ import math
 import json
 import os
 from utils import g, bcolors, behavior, goal
+from rich.console import Console
+from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
+from rich.panel import Panel
 
 class Todolist:
 	def __init__(self, account, api):
@@ -186,22 +189,44 @@ class Todolist:
 						self.api.spend_capital(leekid, stats)
 
 	def trySynchronize(self):
+		console = Console()
+		
 		if self.synchronize == None:
-			return print("%sNo synchronize config for this account%s"%(bcolors.FAIL, bcolors.ENDC))
+			console.print("[red]No synchronize config for this account[/red]")
+			return
+			
 		transfer = self.synchronize['transfer']
 		directory = self.synchronize['directory']
+		
 		if transfer == g.DOWNLOAD:
 			if not os.path.isdir(directory):
 				os.mkdir(directory)
-				print("%smkdir%s %s"%(bcolors.OKBLUE, bcolors.ENDC, directory))
+				console.print(f"[blue]📁 Created directory:[/blue] {directory}")
+			
 			ais = self.api.get_ais()
-			self.recursiv_create(ais['ais'], ais['folders'], g.LW_ROOT_DIR, directory)
+			total_files = len(ais['ais'])
+			
+			with Progress(
+				SpinnerColumn(),
+				TextColumn("[progress.description]{task.description}"),
+				BarColumn(),
+				TextColumn("[progress.percentage]{task.percentage:>3.0f}%")
+			) as progress:
+				task = progress.add_task("🔽 Downloading AI files...", total=total_files)
+				self.recursiv_create_with_progress(ais['ais'], ais['folders'], g.LW_ROOT_DIR, directory, progress, task)
+		
 		elif transfer == g.UPLOAD:
-			ignored = self.synchronize['ignore']
+			ignored = self.synchronize.get('ignore', [])
 			ais = self.api.get_ais()
-			self.recursiv_read(ais, g.LW_ROOT_DIR, directory, ignored)
+			
+			with Progress(
+				SpinnerColumn(),
+				TextColumn("[progress.description]{task.description}")
+			) as progress:
+				task = progress.add_task("🔼 Uploading AI files...")
+				self.recursiv_read(ais, g.LW_ROOT_DIR, directory, ignored)
 		else:
-			print("%sunknown transfer direction:%s %s"%(bcolors.FAIL, bcolors.ENDC, transfer))
+			console.print(f"[red]Unknown transfer direction:[/red] {transfer}")
 
 	def recursiv_read(self, ais, dir_id, directory, ignored):
 		ldir = [x for x in os.listdir(directory) if x not in ignored]
@@ -216,6 +241,24 @@ class Todolist:
 				lw_item = next((fd for fd in ais['folders'] if fd['name'] == name), None)
 				folder_id = self.api.create_dir(dir_path, name, dir_id, lw_item)
 				self.recursiv_read(ais, folder_id, dir_path, ignored)
+
+	def recursiv_create_with_progress(self, ais, folders, parent_id, root_id, progress, task):
+		console = Console()
+		for ai in ais:
+			if ai['folder'] == parent_id:
+				code = self.api.get_ai(ai['id'])
+				file_path = os.path.join(root_id,ai['name'])
+				with open(file_path, mode='w', encoding="utf-8") as writer:
+					writer.write(code)
+					console.print(f"[green]📄 Downloaded:[/green] {file_path}")
+					progress.advance(task)
+		for d in folders:
+			if d['folder'] == parent_id:
+				dir_name = os.path.join(root_id,d['name'])
+				if not os.path.isdir(dir_name):
+					os.mkdir(dir_name)
+					console.print(f"[blue]📁 Created:[/blue] {dir_name}")
+				self.recursiv_create_with_progress(ais, folders, d['id'], dir_name, progress, task)
 
 	def recursiv_create(self, ais, folders, parent_id, root_id):
 		for ai in ais:

@@ -5,6 +5,11 @@ import time
 import sys
 
 from utils import bcolors, g, strategy
+from rich.console import Console
+from rich.table import Table
+from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.panel import Panel
+from rich import print as rprint
 
 #################################################################
 # leekwars API
@@ -23,8 +28,17 @@ class lwapi:
 	# connecting to leekwars
 	def connect(self):
 		r = self.s.post("%s/farmer/login-token/"%self.rooturl, data={'login':self.login,'password':self.password})
-		self.headers = {'Authorization': 'Bearer %s'%r.json()['token']}
-		self.farmer = r.json()['farmer']
+		response_data = r.json()
+		
+		# Check for errors
+		if 'error' in response_data and len(response_data) == 1:
+			raise Exception("API Error: %s" % response_data.get('error', 'Unknown error'))
+		
+		# Set headers with token if available
+		token = response_data.get('token')
+		self.headers = {'Authorization': 'Bearer %s' % token} if token else {}
+		
+		self.farmer = response_data['farmer']
 		self.farmer_id = self.farmer['id']
 		# this get refresh connected status on account (for NONE behavior)
 		self.s.get("%s/garden/get-farmer-opponents"%self.rooturl, headers=self.headers)
@@ -113,25 +127,40 @@ class lwapi:
 				time.sleep(g.DELAY)
 				continue
 			elif winner>=0:
-				win = g.WINNERSWITCH.get(winner, 'WTF?')
+				console = Console()
+				
+				# Create result emoji and color based on winner
+				if winner == 0:
+					result_display = "🤝 [yellow]DRAW[/yellow]"
+				elif winner == 1:
+					result_display = "🏆 [green]WIN[/green]"
+				elif winner == 2:
+					result_display = "💀 [red]LOSE[/red]"
+				else:
+					result_display = "❓ [magenta]UNKNOWN[/magenta]"
+				
 				if fight_type == g.FIGHT_TYPE_FARMER:
 					myTalent = result['report']['farmer1']['talent'] + result['report']['farmer1']['talent_gain']
 					enTalent = result['report']['farmer2']['talent'] + result['report']['farmer2']['talent_gain']
-					print("\r%s %s (%s) vs %s (%s)"%(win, result['report']['farmer1']['name'], myTalent, result['report']['farmer2']['name'], enTalent))
+					console.print(f"\r⚔️  {result_display} [cyan]{result['report']['farmer1']['name']}[/cyan] ({myTalent}) vs [yellow]{result['report']['farmer2']['name']}[/yellow] ({enTalent})")
 				elif fight_type == g.FIGHT_TYPE_SOLO:
-					print("\r%s %s -lvl%s (%s) vs %s (%s)"%(win, result['leeks1'][0]['name'], result['leeks1'][0]['level'], result['leeks1'][0]['talent'], result['leeks2'][0]['name'], result['leeks2'][0]['talent']))
+					my_leek = result['leeks1'][0]
+					enemy_leek = result['leeks2'][0]
+					console.print(f"\r🥬 {result_display} [cyan]{my_leek['name']}[/cyan] lvl{my_leek['level']} ({my_leek['talent']}) vs [yellow]{enemy_leek['name']}[/yellow] ({enemy_leek['talent']})")
 				elif fight_type == g.FIGHT_TYPE_TEAM:
 					myTalent = result['report']['team1']['talent'] + result['report']['team1']['talent_gain']
 					enTalent = result['report']['team2']['talent'] + result['report']['team2']['talent_gain']
-					print("\r%s %s (%s) vs %s (%s)"%(win, result['report']['team1']['name'], myTalent, result['report']['team2']['name'], enTalent))
+					console.print(f"\r👥 {result_display} [cyan]{result['report']['team1']['name']}[/cyan] ({myTalent}) vs [yellow]{result['report']['team2']['name']}[/yellow] ({enTalent})")
 				else:
-					print("\r%sunknown fight_type:%s %s%s%s"%(bcolors.FAIL,bcolors.ENDC,bcolors.HEADER,fight_type,bcolors.ENDC))
+					console.print(f"\r[red]Unknown fight type:[/red] {fight_type}")
 				sys.stdout.flush()
 				self.refresh_account_state()
 				return
 
 	# print a resume of the account state & return leeks number to ID association
 	def display_status(self):
+		console = Console()
+		
 		# handling farmer infos
 		fName = self.farmer['login']
 		fTalent = self.farmer['talent']
@@ -140,27 +169,49 @@ class lwapi:
 		nbFights = self.farmer['fights']
 		isOutOfGarden = self.farmer['in_garden'] != 1
 		
-		print("%sCurrent: %s%s%s - lvl%s | talent: %s | habs: %s | fights left: %s%s"%(bcolors.BOLD, bcolors.HEADER, fName, bcolors.ENDC, fLevel, fTalent, fHabs, nbFights, bcolors.ENDC))
+		# Create farmer status table
+		farmer_table = Table(title=f"🧑‍🌾 Farmer: {fName}", show_header=False)
+		farmer_table.add_column("Stat", style="cyan")
+		farmer_table.add_column("Value", style="green")
+		
+		farmer_table.add_row("Level", str(fLevel))
+		farmer_table.add_row("Talent", str(fTalent))
+		farmer_table.add_row("Habs", f"{fHabs:,}")
+		farmer_table.add_row("Fights Left", str(nbFights))
+		
 		if isOutOfGarden:
-			print("%s/!\\%s farmer not in garden ! %s/!\\%s"%(bcolors.FAIL, bcolors.WARNING, bcolors.FAIL, bcolors.ENDC))
+			farmer_table.add_row("⚠️ Status", "[red]NOT IN GARDEN![/red]")
+		
+		console.print(farmer_table)
+		
+		# Create leeks table
+		if self.farmer['leeks']:
+			leeks_table = Table(title="🥬 Leeks Status")
+			leeks_table.add_column("Name", style="cyan")
+			leeks_table.add_column("Level", style="green")
+			leeks_table.add_column("Talent", style="yellow")
+			leeks_table.add_column("Capital", style="red")
 			
-		leeks_to_ID = {}
-		index = g.LEEK_1
-		for leekid, leekinfo in self.farmer['leeks'].items():
-			# saving leek realID
-			leeks_to_ID[index] = leekid
-			index += 1
+			leeks_to_ID = {}
+			index = g.LEEK_1
+			for leekid, leekinfo in self.farmer['leeks'].items():
+				# saving leek realID
+				leeks_to_ID[index] = leekid
+				index += 1
+				
+				# display welcome info
+				lName = leekinfo['name']
+				lLevel = leekinfo['level']
+				lTalent = leekinfo['talent']
+				lCapital = leekinfo['capital']
+				
+				capital_display = str(lCapital) if lCapital == 0 else f"[red]⚠️ {lCapital}[/red]"
+				leeks_table.add_row(lName, str(lLevel), str(lTalent), capital_display)
 			
-			# display welcome info
-			lName = leekinfo['name']
-			lLevel = leekinfo['level']
-			lTalent = leekinfo['talent']
-			lCapital = leekinfo['capital']
-			warn = ""
-			if lCapital > 0:
-				warn = "%s/!\\%s %s capital points unused %s/!\\%s"%(bcolors.FAIL, bcolors.WARNING, lCapital, bcolors.FAIL, bcolors.ENDC)
-			print("%s - lvl%s | talent: %s %s"%(lName, lLevel, lTalent, warn))
-		self.leeks_to_ID = leeks_to_ID
+			console.print(leeks_table)
+			self.leeks_to_ID = leeks_to_ID
+		else:
+			console.print("[yellow]No leeks found[/yellow]")
 		sys.stdout.flush()
 		return leeks_to_ID
 

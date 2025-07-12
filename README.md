@@ -20,6 +20,8 @@ nécessite [python3](https://www.python.org/downloads/) et [pip](https://pypi.or
 
 sous windows, cmd et powershell n'interprète pas les codes couleurs, je recommande l'utilisation de [gitbash](https://gitforwindows.org/) ou [mingw](https://www.mingw-w64.org/) par exemple.
 
+le script utilise maintenant [rich](https://github.com/Textualize/rich) pour un affichage moderne avec des tableaux et barres de progression dans le terminal.
+
 ### settings.py
 
 chaque compte utilisateur est représenté par un dictionnaire {} python possédant les attributs suivants :
