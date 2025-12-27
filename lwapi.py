@@ -21,7 +21,7 @@ class lwapi:
 		self.strategy = account.get('strategy', None)
 		self.version = account.get('synchronize', None)
 		if self.version != None:
-			self.version = self.version.get('version', '11') # 11 = v1.1 leekscript
+			self.version = self.version.get('version', '4') # default to LeekScript v4
 		self.s = requests.session()
 		self.rooturl = "https://leekwars.com/api"
 
