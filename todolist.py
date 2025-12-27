@@ -233,14 +233,15 @@ class Todolist:
 		for name in ldir:
 			file_path = os.path.join(directory,name)
 			if os.path.isfile(file_path):
-				lw_item = next((ai for ai in ais['ais'] if ai['name'] == name), None)
+				lw_item = next((ai for ai in ais['ais'] if ai['name'] == name and ai['folder'] == dir_id), None)
 				self.api.create_ai(file_path, name, dir_id, lw_item)
 		for name in ldir:
 			dir_path = os.path.join(directory,name)
 			if os.path.isdir(dir_path):
-				lw_item = next((fd for fd in ais['folders'] if fd['name'] == name), None)
+				lw_item = next((fd for fd in ais['folders'] if fd['name'] == name and fd['folder'] == dir_id), None)
 				folder_id = self.api.create_dir(dir_path, name, dir_id, lw_item)
-				self.recursiv_read(ais, folder_id, dir_path, ignored)
+				if folder_id is not None:
+					self.recursiv_read(ais, folder_id, dir_path, ignored)
 
 	def recursiv_create_with_progress(self, ais, folders, parent_id, root_id, progress, task):
 		console = Console()

@@ -264,24 +264,37 @@ class lwapi:
 				print("%s%s%s when trying to register tournament on %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.OKBLUE,self.farmer['leeks'][leek_id]["name"],bcolors.ENDC))
 
 	def get_ais(self):
-		r = self.s.get("%s/ai/get-farmer-ais"%self.rooturl)
+		r = self.s.get("%s/ai/get-farmer-ais"%self.rooturl, headers=self.headers)
 		#print(r.json())
 		return r.json()
 
 	def get_ai(self, ai_id):
-		r = self.s.get("%s/ai/get/%s"%(self.rooturl,ai_id), data={'ai_id':ai_id})
+		r = self.s.get("%s/ai/get/%s"%(self.rooturl,ai_id), headers=self.headers, data={'ai_id':ai_id})
 		return r.json()['ai']['code']
 
 	def create_ai(self, file_path, file_name, dir_id,  lw_item):
 		if lw_item == None:
-			r = self.s.post("%s/ai/new/%s/%s"%(self.rooturl,dir_id,'false'), data={'folder_id':dir_id, 'version':self.version})
-			if r:
-				lw_id = r.json()['ai']['id']
-				r = self.s.post("%s/ai/rename"%self.rooturl, data={'ai_id':lw_id, 'new_name':file_name})
-			if r:
+			time.sleep(0.3)  # Rate limit protection
+			# Use new-name endpoint which creates and names in one call
+			r = self.s.post("%s/ai/new-name"%self.rooturl, headers=self.headers, data={'folder_id':dir_id, 'version':self.version, 'name':file_name})
+			if r.ok:
+				try:
+					resp = r.json()
+				except:
+					print("%s%s%s when trying to create file %s%s%s"%(bcolors.FAIL,'invalid JSON response',bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
+					return
+				if 'ai' not in resp:
+					print("%s%s%s when trying to create file %s%s%s"%(bcolors.FAIL,resp.get('error', 'unknown error'),bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
+					return
+				lw_id = resp['ai']['id']
 				print("%screated%s file %s%s%s"%(bcolors.OKBLUE,bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
 			else:
-				print("%s%s%s when trying to create file %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
+				try:
+					err = r.json().get('error', 'HTTP %d' % r.status_code)
+				except:
+					err = 'HTTP %d' % r.status_code
+				print("%s%s%s when trying to create file %s%s%s"%(bcolors.FAIL,err,bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
+				return
 		else:
 			lw_id = lw_item['id']
 		with open(file_path, mode="r", encoding="utf-8") as reader:
@@ -289,24 +302,49 @@ class lwapi:
 				code = reader.read()
 			except UnicodeDecodeError as e:
 				print("%s%s%s when trying to update file %s%s%s (check your encoding, file must be in utf-8)"%(bcolors.FAIL,e,bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
+				return
 			if code:
-				r = self.s.post("%s/ai/save"%self.rooturl, data={'ai_id':lw_id,'code':code})
-			if r:
-				print("%supdated%s file %s%s%s"%(bcolors.OKBLUE,bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
-			else:
-				print("%s%s%s when trying to update file %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
+				time.sleep(0.2)  # Rate limit protection
+				r = self.s.post("%s/ai/save"%self.rooturl, headers=self.headers, data={'ai_id':lw_id,'code':code})
+				if r.ok:
+					print("%supdated%s file %s%s%s"%(bcolors.OKBLUE,bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
+				else:
+					try:
+						err = r.json().get('error', 'HTTP %d' % r.status_code)
+					except:
+						err = 'HTTP %d' % r.status_code
+					print("%s%s%s when trying to update file %s%s%s"%(bcolors.FAIL,err,bcolors.ENDC,bcolors.HEADER,file_name,bcolors.ENDC))
 			sys.stdout.flush()
 
 	def create_dir(self, dir_path, dir_name, dir_id,  lw_item):
+		lw_id = None
 		if lw_item == None:
-			r = self.s.post("%s/ai-folder/new/%s"%(self.rooturl,dir_id), data={'folder_id':dir_id})
-			if r:
-				lw_id = r.json()['id']
-				r = self.s.post("%s/ai-folder/rename/%s/%s"%(self.rooturl,lw_id,dir_name), data={'folder_id':lw_id, 'new_name':dir_name})
-			if r:
-				print("%screated%s directory %s%s%s"%(bcolors.OKBLUE,bcolors.ENDC,bcolors.HEADER,dir_name,bcolors.ENDC))
+			time.sleep(0.3)  # Rate limit protection
+			r = self.s.post("%s/ai-folder/new/%s"%(self.rooturl,dir_id), headers=self.headers, data={'folder_id':dir_id})
+			if r.ok:
+				try:
+					resp = r.json()
+				except:
+					print("%s%s%s when trying to create directory %s%s%s"%(bcolors.FAIL,'invalid JSON response',bcolors.ENDC,bcolors.HEADER,dir_name,bcolors.ENDC))
+					return None
+				if 'id' not in resp:
+					err = resp.get('error', 'unknown error')
+					print("%s%s%s when trying to create directory %s%s%s"%(bcolors.FAIL,err,bcolors.ENDC,bcolors.HEADER,dir_name,bcolors.ENDC))
+					return None
+				lw_id = resp['id']
+				time.sleep(0.2)  # Rate limit protection
+				r = self.s.post("%s/ai-folder/rename/%s/%s"%(self.rooturl,lw_id,dir_name), headers=self.headers, data={'folder_id':lw_id, 'new_name':dir_name})
+				if r.ok:
+					print("%screated%s directory %s%s%s"%(bcolors.OKBLUE,bcolors.ENDC,bcolors.HEADER,dir_name,bcolors.ENDC))
+				else:
+					print("%s%s%s when trying to rename directory %s%s%s (status %d)"%(bcolors.FAIL,'rename failed',bcolors.ENDC,bcolors.HEADER,dir_name,bcolors.ENDC,r.status_code))
 			else:
-				print("%s%s%s when trying to create directory %s%s%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.HEADER,dir_name,bcolors.ENDC))
+				try:
+					err = r.json().get('error', 'HTTP %d' % r.status_code)
+				except:
+					err = 'HTTP %d' % r.status_code
+				print("%s%s%s when trying to create directory %s%s%s"%(bcolors.FAIL,err,bcolors.ENDC,bcolors.HEADER,dir_name,bcolors.ENDC))
+				return None
 			sys.stdout.flush()
 		else:
 			lw_id = lw_item['id']
