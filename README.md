@@ -14,9 +14,22 @@ script en python3 qui permet de gérer ses comptes à travers l'api [leekwars](h
 nécessite [python3](https://www.python.org/downloads/) et [pip](https://pypi.org/project/pip/)
 
 - git clone https://github.com/tagadanar/leekwars_gardener.git
-- configurer ses comptes dans le fichier settings.py
 - pip install -r requirements.txt
+- créer un fichier `.env` avec vos identifiants (voir ci-dessous)
+- configurer ses comptes dans le fichier settings.py
 - python main.py
+
+### fichier .env
+
+pour des raisons de sécurité, les identifiants sont stockés dans un fichier `.env` à la racine du projet (ce fichier est ignoré par git).
+
+créez un fichier `.env` avec le contenu suivant :
+```
+LEEKWARS_LOGIN=votre_email
+LEEKWARS_PASSWORD=votre_mot_de_passe
+```
+
+le fichier settings.py utilise ces variables d'environnement via `os.getenv()`.
 
 sous windows, cmd et powershell n'interprète pas les codes couleurs, je recommande l'utilisation de [gitbash](https://gitforwindows.org/) ou [mingw](https://www.mingw-w64.org/) par exemple.
 
