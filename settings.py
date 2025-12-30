@@ -44,6 +44,10 @@ class Accounts:
 			'synchronize': { # /!\ careful with this /!\
 				'directory': './path_to_ia_dir', # local directory to read/write
 				'transfer': g.DOWNLOAD,
+				'ignore': [  # files/folders to skip when uploading
+					'.git',
+					'.gitignore',
+				],
 			},
 		},
 		# Example of a second account:
