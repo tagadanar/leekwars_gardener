@@ -1,17 +1,21 @@
+import os
+from dotenv import load_dotenv
 from utils import g, behavior, state, goal, strategy
+
+load_dotenv()
 
 #################################################################
 # Declaring accounts
 #################################################################
 class Accounts:
-	fight = state.ON
+	fight = state.OFF
 	shutdown = state.OFF
 	synchronize = state.OFF
 	speedrun = state.OFF
 	list= [
 		{
-			'login': 'myAccount',
-			'password': 'myPassword',
+			'login': os.getenv('LEEKWARS_LOGIN'),
+			'password': os.getenv('LEEKWARS_PASSWORD'),
 			'behavior': behavior.EQUALIZE, # how we spend fights in the garden
 			'strategy': strategy.RANDOM, # how we choose opponent in the garden
 			'buy_fight': False, # will try to buy fights if set to True
@@ -42,19 +46,19 @@ class Accounts:
 				'transfer': g.DOWNLOAD,
 			},
 		},
-		{
-			'login': 'myAccount2',
-			'password': 'myPassword2',
-			'behavior': behavior.NONE,
-			'synchronize': { # /!\ careful with this /!\
-				'directory': './path_to_ia_dir', # local directory to read/write
-				'transfer': g.UPLOAD,
-				'version': '11', # when uploading, leekscript version of the script when created. default to 11 if unspecified
-				# I don't handle different file version for the moment. valid value are 1 and 11 (for 1.1 version)
-				'ignore': [
-					'.git', # files to ignore when uploading the directory to leekwars.com, usefull when you git your ia
-					'README.MD'
-				],
-			},
-		},
+		# Example of a second account:
+		# {
+		# 	'login': os.getenv('LEEKWARS_LOGIN_2'),
+		# 	'password': os.getenv('LEEKWARS_PASSWORD_2'),
+		# 	'behavior': behavior.NONE,
+		# 	'synchronize': { # /!\ careful with this /!\
+		# 		'directory': './path_to_ia_dir', # local directory to read/write
+		# 		'transfer': g.UPLOAD,
+		# 		'version': '4', # leekscript version when creating new files
+		# 		'ignore': [
+		# 			'.git', # files to ignore when uploading
+		# 			'README.MD'
+		# 		],
+		# 	},
+		# },
 	]
