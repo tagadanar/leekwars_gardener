@@ -16,6 +16,7 @@ class g:
 	LEEK_3= 3
 	LEEK_4= 4
 	DELAY = 2 # seconds between each check when waiting for fight result
+	MAX_WAIT = 300 # seconds before giving up on an unresolved fight
 	WINNERSWITCH = {
 		0: bcolors.WARNING+'DRAW'+bcolors.ENDC,
 		1: bcolors.OKGREEN+'WIN '+bcolors.ENDC,

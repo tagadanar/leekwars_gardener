@@ -56,7 +56,7 @@ class lwapi:
 		r = self.s.get("%s/garden/get-leek-opponents/%s"%(self.rooturl,leekid), headers=self.headers, data={'leek_id':leekid})
 		garden = r.json()['opponents']
 		if len(garden) < 1:
-			print("%sNo one in the garden%s when trying to do a solo fight with %s%s%s"%(bcolors.FAIL,bcolors.ENDC,bcolors.OKBLUE,self.farmer['leeks'][leek_id]['name'],bcolors.ENDC))
+			print("%sNo one in the garden%s when trying to do a solo fight with %s%s%s"%(bcolors.FAIL,bcolors.ENDC,bcolors.OKBLUE,self.farmer['leeks'][leekid]['name'],bcolors.ENDC))
 			sys.stdout.flush()
 			return None
 		e = self.get_opponent(garden)
@@ -112,7 +112,14 @@ class lwapi:
 	# wait for fight result then print it
 	def wait_fight_result(self, fight_id, fight_type):
 		firstwait = True
+		waited = 0
 		while True:
+			# give up rather than poll forever: a fight stuck unresolved used to
+			# hang the whole run and starve every account still queued behind it
+			if waited > g.MAX_WAIT:
+				print("\r%sgave up waiting%s for fight %s%s%s"%(bcolors.FAIL,bcolors.ENDC,bcolors.HEADER,fight_id,bcolors.ENDC))
+				sys.stdout.flush()
+				return
 			r = self.s.get("%s/fight/get/%s"%(self.rooturl,fight_id), headers=self.headers, data={'fight_id':fight_id})
 			result = r.json()
 			winner = result['winner']
@@ -131,6 +138,7 @@ class lwapi:
 					sys.stdout.write('.')
 				sys.stdout.flush()
 				time.sleep(g.DELAY)
+				waited += g.DELAY
 				continue
 			elif winner>=0:
 				console = Console()
@@ -233,12 +241,16 @@ class lwapi:
 			print("%s%s%s when trying to spend %s on %s%s%s"%(bcolors.FAIL,r.json(),bcolors.ENDC,stats,bcolors.OKBLUE,self.farmer['leeks'][leek_id]['name'],bcolors.ENDC))
 
 	def buy_fights(self):
-		r = self.s.post("%s/market/buy-habs"%self.rooturl, data={'item_id':'100-fights'})
+		r = self.s.post("%s/market/buy-habs-quantity"%self.rooturl, headers=self.headers, data={'item_id':'50fights','quantity':1})
 		if r:
 			self.refresh_account_state()
-			print("%sbuying 100 fights%s: %s"%(bcolors.OKBLUE,bcolors.ENDC,r.text))
+			print("%s%s bought 50 fights%s: %s"%(bcolors.OKBLUE,self.login,bcolors.ENDC,r.text))
 		else:
-			print("%s%s%s when trying to buy %s100 fights%s"%(bcolors.FAIL,r.json()['error'],bcolors.ENDC,bcolors.OKBLUE,bcolors.ENDC))
+			try:
+				err = r.json().get('error', r.text)
+			except ValueError:
+				err = r.text
+			print("%s%s%s when trying to buy %s50 fights%s on %s%s%s"%(bcolors.FAIL,err,bcolors.ENDC,bcolors.OKBLUE,bcolors.ENDC,bcolors.OKBLUE,self.login,bcolors.ENDC))
 
 
 	def get_leek(self, leek_id):
